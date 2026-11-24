@@ -81,3 +81,47 @@ um `EntityManager`, e `@Transactional` nos métodos que alteram dados.
 A integração JTA usa `WebSphereLibertyJtaPlatform`. O datasource é XA;
 transações distribuídas com mais de um recurso podem exigir habilitar transações
 preparadas no PostgreSQL. Transações com apenas esse datasource não precisam disso.
+
+## Entidades do banco existente
+
+As 29 tabelas foram mapeadas em `src/main/java/br/com/avalia/modelo`:
+
+- `academico`: 15 entidades e a chave composta `UnidadeClosureId`.
+- `avaliacao`: 14 entidades.
+
+As classes usam anotações Jakarta Persistence, construtores sem argumentos,
+getters e setters explícitos, sem Lombok. Os 35 relacionamentos declarados no
+banco usam `@ManyToOne(fetch = LAZY)`, sem cascatas de remoção na aplicação.
+As tabelas de associação também possuem suas próprias entidades.
+
+Os IDs inteiros das tabelas acadêmicas são atribuídos externamente, exceto
+`EtlLog`, cujo ID usa a sequência existente por meio de `IDENTITY`.
+Os IDs UUID com default `gen_random_uuid()` usam `GenerationType.UUID`.
+`UnidadeClosure` usa `@EmbeddedId`, com igualdade e hash da chave composta.
+
+Datas sem fuso usam `LocalDateTime`, datas com fuso usam `OffsetDateTime`,
+datas civis usam `LocalDate` e valores decimais usam `BigDecimal`.
+Colunas PostgreSQL `text` são mapeadas diretamente como texto, sem `@Lob`.
+As entidades que têm defaults para atributos comuns usam `@DynamicInsert`:
+um atributo nulo no INSERT permite aplicar o default do banco. Use `refresh`
+ou uma nova leitura quando precisar desses valores na instância em memória.
+Não há atualização automática de timestamps em Java; vale a regra existente no banco.
+
+Colunas sem chave estrangeira declarada continuam como identificadores simples,
+incluindo referências a unidades e `InstrumentoAvaliativo.tipoEntidadeAvaliadaId`.
+Os campos `tipo` e `tiposessao` de `InstrumentoSessao` permanecem distintos,
+conforme a tabela existente. Valores de status e tipo continuam como `String`.
+
+Para validar o modelo contra a base local:
+
+```powershell
+.\scripts\Validar-Modelo.ps1
+```
+
+A verificação é explícita e precisa do PostgreSQL. Ela compara o conjunto de
+tabelas com as entidades, valida o schema pelo Hibernate e consulta até um registro
+por entidade em uma conexão PostgreSQL somente leitura. Não imprime dados dos
+registros e encerra a transação com rollback. A chave composta também é verificada.
+As variáveis `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD` são aceitas.
+O Yasson tem escopo `test` para executar essa verificação fora do servidor; no
+Liberty, JSON-B continua sendo fornecido pela feature `jsonb-3.0`.
