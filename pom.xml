@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>br.com.avalia</groupId>
+    <artifactId>avalia-plataforma</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>Avalia Plataforma</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
+        <openliberty.version>26.0.0.11</openliberty.version>
+        <liberty.maven.plugin.version>3.12.5</liberty.maven.plugin.version>
+        <hibernate.version>7.4.17.Final</hibernate.version>
+        <postgresql.version>42.7.14</postgresql.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>11.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Bibliotecas fornecidas pelo servidor, sem duplicação no WAR. -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>avalia-plataforma</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>hibernate-server-library</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                            <!-- APIs Jakarta e JAXB são fornecidos pelas features do Liberty. -->
+                            <includeGroupIds>org.hibernate.orm,org.hibernate.models,org.jboss.logging,net.bytebuddy,org.antlr</includeGroupIds>
+                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/hibernate</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>postgresql-server-library</id>
+                        <phase>prepare-package</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                        <configuration>
+                            <includeArtifactIds>postgresql</includeArtifactIds>
+                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/postgresql</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <version>${liberty.maven.plugin.version}</version>
+                <configuration>
+                    <serverName>avaliaServer</serverName>
+                    <runtimeArtifact>
+                        <groupId>io.openliberty</groupId>
+                        <artifactId>openliberty-runtime</artifactId>
+                        <version>${openliberty.version}</version>
+                        <type>zip</type>
+                    </runtimeArtifact>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
+         version="6.1">
+    <display-name>Avalia Plataforma</display-name>
+    <context-param>
+        <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
+        <param-value>/WEB-INF/tags.taglib.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- Configuração inicial para desenvolvimento local. -->
+    <context-param>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <param-name>jakarta.faces.WEBAPP_RESOURCES_DIRECTORY</param-name>
+        <param-value>WEB-INF/resources</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>facesServlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>facesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>30</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+        </cookie-config>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+</web-app>

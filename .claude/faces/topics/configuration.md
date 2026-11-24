@@ -1,0 +1,121 @@
+# Minimal Faces Configuration
+
+*Version 1.10.2*
+
+## web.xml
+
+`WEB-INF/web.xml` MUST minimally have this configuration:
+```xml
+<context-param>
+    <param-name>jakarta.faces.FACELETS_LIBRARIES</param-name>
+    <param-value>/WEB-INF/tags.taglib.xml</param-value> <!-- To register custom namespace with custom tag files. -->
+</context-param>
+<context-param>
+    <param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
+    <param-value>true</param-value> <!-- To prevent EL expressions inside comments from being evaluated. -->
+</context-param>
+<context-param>
+    <param-name>jakarta.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+    <param-value>true</param-value> <!-- To prevent empty string submitted values slipping through @NotNull validation and/or ending up in database. -->
+</context-param>
+<context-param>
+    <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+    <param-value>Development</param-value> <!-- To disable XHTML cache so it can be hot-reloaded, and to get development stage messages; NOT FOR PRODUCTION! -->
+</context-param>
+<context-param>
+    <param-name>jakarta.faces.WEBAPP_RESOURCES_DIRECTORY</param-name>
+    <param-value>WEB-INF/resources</param-value> <!-- To prevent direct access to composite component source code. -->
+</context-param>
+
+<servlet>
+    <servlet-name>facesServlet</servlet-name>
+    <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+    <servlet-name>facesServlet</servlet-name>
+    <url-pattern>*.xhtml</url-pattern> <!-- Explicitly register single `*.xhtml` URL pattern to prevent implicit ones such as /faces/*, *.faces, and *.jsf from being activated. -->
+</servlet-mapping>
+```
+
+## ProjectStage-Derived Defaults
+
+Some defaults depend on `jakarta.faces.PROJECT_STAGE`, so you rarely need to set them explicitly:
+- **`jakarta.faces.FACELETS_REFRESH_PERIOD`**: in `Production` the effective default is `-1` — Facelets are compiled once and cached indefinitely, never re-checked. In EVERY non-`Production` stage the default is `0` — each request re-checks the source file for changes, enabling hot reload. (Production `-1` since JSF 2.3, spec #936; non-Production `0` clarified in Faces 4.1, spec #1821.) Set it explicitly only to override this per-stage behavior.
+
+## Content Security Policy (Faces 5.0)
+
+- **`jakarta.faces.ENABLE_CSP_NONCE`** is an application-wide context-param, default **off** (no per-view override). When enabled, Faces stops rendering inline `on*` event-handler attributes (`onclick`, `onchange`, `onblur`, etc.) and instead wires the corresponding client behaviors as nonce-tagged `<script>` listeners, so a strict CSP without `unsafe-inline` can be enforced. When disabled (the default), components render inline `on*` handlers as before.
+
+## faces-config.xml
+
+`WEB-INF/faces-config.xml` MUST minimally have this configuration:
+```xml
+<application>
+    <locale-config>
+        <default-locale>en</default-locale> <!-- Set to your default locale. -->
+    </locale-config>
+</application>
+```
+
+## tags.taglib.xml
+
+The taglib file name prefix is free to choose (e.g. `tags.taglib.xml`, `app.taglib.xml`, `myproject.taglib.xml`).
+Only the `.taglib.xml` suffix is required by convention.
+The name must match the value in `jakarta.faces.FACELETS_LIBRARIES` above.
+
+The taglib file MUST minimally have this configuration:
+```xml
+<facelet-taglib>
+    <namespace>tags</namespace>
+    <short-name>t</short-name>
+    <composite-library-name>components</composite-library-name>
+</facelet-taglib>
+```
+So that all tags AND composites can be referenced via the same XML namespace `xmlns:t="tags"`.
+
+## Java-Declared Component Tags (@FacesComponent)
+
+Since JSF 2.2, a custom Facelets tag can be declared in Java alone, without a `*.taglib.xml` descriptor, by setting `createTag = true` on `@FacesComponent`:
+```java
+@FacesComponent(createTag = true, tagName = "myTag", value = "my.component.type")
+public class MyComponent extends UIComponentBase {
+
+    @Override
+    public String getFamily() {
+        return "my.component.family";
+    }
+}
+```
+The tag is then available as `<my:myTag>` on any page binding a prefix to `FacesComponent.NAMESPACE`. Set `namespace` on the annotation to put it in a namespace of your own instead. For the value of `FacesComponent.NAMESPACE` per Faces version, see "XML Namespaces" in `.claude/faces/rules.md`.
+
+## Directory Structure
+
+All assets/templates/includes/tagfiles/composites MUST be placed inside `WEB-INF` folder to prevent direct access by client.
+```
+|-- WEB-INF/
+|    |-- includes/
+|    |    `-- include.xhtml
+|    |-- resources/
+|    |    |-- components/
+|    |    |    `-- composite.xhtml
+|    |    |-- fonts/
+|    |    |    `-- font.woff2
+|    |    |-- icons/
+|    |    |    `-- icon.svg
+|    |    |-- images/
+|    |    |    `-- image.png
+|    |    |-- scripts/
+|    |    |    `-- script.js
+|    |    `-- styles/
+|    |    |    `-- style.css
+|    |-- tags/
+|    |    `-- tagfile.xhtml
+|    |-- templates/
+|    |    `-- template.xhtml
+|    |-- beans.xml
+|    |-- faces-config.xml
+|    |-- tags.taglib.xml
+|    `-- web.xml
+`-- page.xhtml
+```

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Servidor local da Avalia Plataforma">
+    <featureManager>
+        <!-- webProfile-11.0 inclui persistence-3.2 (EclipseLink). -->
+        <feature>faces-4.1</feature>
+        <feature>cdi-4.1</feature>
+        <feature>servlet-6.1</feature>
+        <feature>appSecurity-6.0</feature>
+        <feature>concurrent-3.1</feature>
+        <feature>data-1.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>pages-4.0</feature>
+        <feature>restfulWS-4.0</feature>
+        <feature>validation-3.1</feature>
+        <feature>websocket-2.2</feature>
+        <feature>jdbc-4.3</feature>
+        <feature>persistenceContainer-3.2</feature>
+        <feature>xmlBinding-4.0</feature>
+        <feature>bells-1.0</feature>
+    </featureManager>
+
+    <variable name="http.port" defaultValue="8080"/>
+    <variable name="https.port" defaultValue="9443"/>
+    <httpEndpoint id="defaultHttpEndpoint" host="localhost"
+                  httpPort="${http.port}" httpsPort="${https.port}"/>
+
+    <variable name="db.host" defaultValue="localhost"/>
+    <variable name="db.port" defaultValue="5432"/>
+    <variable name="db.name" defaultValue="avalia"/>
+    <variable name="db.user" defaultValue="postgres"/>
+    <variable name="db.password" defaultValue="postgres"/>
+
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/hibernate" includes="*.jar"/>
+    </library>
+    <bell libraryRef="HibernateLib"/>
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider"
+         defaultJtaDataSourceJndiName="jdbc/avalia"/>
+
+    <library id="PostgreSQLLib">
+        <fileset dir="${shared.resource.dir}/postgresql" includes="postgresql-*.jar"/>
+    </library>
+    <dataSource id="DefaultDataSource" jndiName="jdbc/avalia"
+                type="javax.sql.XADataSource" transactional="true">
+        <jdbcDriver libraryRef="PostgreSQLLib"
+                    javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"/>
+        <properties.postgresql serverName="${db.host}" portNumber="${db.port}"
+                               databaseName="${db.name}"
+                               user="${db.user}" password="${db.password}"
+                               connectTimeout="10" socketTimeout="30"/>
+        <connectionManager minPoolSize="0" maxPoolSize="20" connectionTimeout="10s"/>
+    </dataSource>
+
+    <webApplication id="avalia-plataforma" location="avalia-plataforma.war"
+                    contextRoot="/avalia">
+        <classloader commonLibraryRef="HibernateLib"/>
+    </webApplication>
+    <applicationManager autoExpand="true"/>
+    <logging consoleLogLevel="INFO"/>
+</server>
