@@ -77,8 +77,16 @@ um link **Editar** para `instrumento_avaliativo_cadastro.xhtml?id=...`.
 - **Sessões e questões**: bloqueada até a primeira gravação bem-sucedida. O DAO
   também exige um instrumento persistido, independentemente do bloqueio visual.
   Sessões têm título, descrição, ordem, tipo e classificação opcional. Os campos
+  são preenchidos em popup aberto por **Nova sessão** ou **Editar sessão**.
+  **Salvar** grava no banco, atualiza a listagem por Ajax e fecha o popup somente
+  em caso de sucesso. **Cancelar** descarta a edição sem gravar. O formulário do
+  popup é separado dos formulários das abas, inclusive ao ser movido para o body.
+  Os campos
   `tipo` e `tiposessao` permanecem distintos, conforme o schema existente.
 - Depois de salvar uma sessão, ela fica selecionada para cadastrar questões.
+  O botão **Questões** na linha da sessão abre um popup próprio com o formulário
+  e a listagem das questões daquela sessão. O nome da sessão é mostrado no popup;
+  não é necessário escolhê-la novamente. **Fechar** descarta campos não salvos.
   As questões têm enunciado, assunto, tipo, conjunto de opções opcional, ordem,
   peso e obrigatoriedade. Há ações de editar e iniciar uma nova sessão/questão.
   A questão e seu vínculo em `sessao_questao` são salvos na mesma transação.

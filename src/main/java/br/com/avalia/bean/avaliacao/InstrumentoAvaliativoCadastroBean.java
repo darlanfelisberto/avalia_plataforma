@@ -42,6 +42,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     private List<SessaoQuestao> questoes;
     private InstrumentoSessao sessao;
     private UUID sessaoSelecionadaId;
+    private String tituloSessaoSelecionada;
     private SessaoQuestao questao;
     private UUID conjuntoId;
 
@@ -102,8 +103,15 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
             var salva = dao.gravarSessao(instrumentoSalvoId, sessao);
             sessoes = dao.sessoes(instrumentoSalvoId); sessaoSelecionadaId = salva.getId();
             selecionarSessao(); novaSessao();
+            org.primefaces.PrimeFaces.current().ajax().update("abas:sessoesForm", "questoesDialogForm");
             mensagem(FacesMessage.SEVERITY_INFO, "Sessão salva. Cadastre suas questões abaixo.");
         });
+    }
+
+    public void abrirQuestoes(InstrumentoSessao item) {
+        sessaoSelecionadaId = item.getId();
+        tituloSessaoSelecionada = item.getTitulo();
+        selecionarSessao();
     }
 
     public void selecionarSessao() {
@@ -166,6 +174,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     public InstrumentoSessao getSessao() { return sessao; }
     public SessaoQuestao getQuestao() { return questao; }
     public UUID getSessaoSelecionadaId() { return sessaoSelecionadaId; }
+    public String getTituloSessaoSelecionada() { return tituloSessaoSelecionada; }
     public void setSessaoSelecionadaId(UUID valor) { sessaoSelecionadaId=valor; }
     public UUID getConjuntoId() { return conjuntoId; }
     public void setConjuntoId(UUID valor) { conjuntoId=valor; }
