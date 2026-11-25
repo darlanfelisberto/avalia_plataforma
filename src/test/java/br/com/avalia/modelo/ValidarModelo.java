@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
@@ -33,6 +34,7 @@ public final class ValidarModelo {
         try {
             var metadata = new MetadataSources(registry);
             var mappedTables = new HashSet<String>();
+            var mappedClasses = new HashSet<String>();
             var classesRoot = Path.of(Aluno.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             try (var paths = Files.walk(classesRoot.resolve("br/com/avalia/modelo"))) {
                 for (var path : paths.filter(p -> p.toString().endsWith(".class")).sorted().toList()) {
@@ -41,6 +43,7 @@ public final class ValidarModelo {
                     var entityClass = Class.forName(name);
                     if (entityClass.isAnnotationPresent(Entity.class)) {
                         metadata.addAnnotatedClass(entityClass);
+                        mappedClasses.add(entityClass.getName());
                         var table = entityClass.getAnnotation(jakarta.persistence.Table.class);
                         mappedTables.add(table.schema() + "." + table.name());
                     }
@@ -48,6 +51,20 @@ public final class ValidarModelo {
             }
             if (mappedTables.isEmpty()) {
                 throw new IllegalStateException("Nenhuma entidade encontrada");
+            }
+            var xmlFactory = DocumentBuilderFactory.newInstance();
+            xmlFactory.setNamespaceAware(true);
+            xmlFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            try (var descriptor = Aluno.class.getClassLoader().getResourceAsStream("META-INF/persistence.xml")) {
+                var document = xmlFactory.newDocumentBuilder().parse(descriptor);
+                var registeredNodes = document.getElementsByTagNameNS("https://jakarta.ee/xml/ns/persistence", "class");
+                var registeredClasses = new HashSet<String>();
+                for (int index = 0; index < registeredNodes.getLength(); index++) {
+                    registeredClasses.add(registeredNodes.item(index).getTextContent().trim());
+                }
+                if (!mappedClasses.equals(registeredClasses)) {
+                    throw new IllegalStateException("O registro de entidades em persistence.xml diverge das classes do modelo");
+                }
             }
             try (var factory = metadata.buildMetadata().buildSessionFactory();
                  var session = factory.openSession()) {

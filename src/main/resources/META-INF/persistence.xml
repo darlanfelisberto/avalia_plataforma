@@ -6,6 +6,37 @@
     <persistence-unit name="avaliaPU" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>jdbc/avalia</jta-data-source>
+        <!-- Registro explícito para o provedor Hibernate externo ao Liberty. -->
+        <class>br.com.avalia.modelo.academico.Aluno</class>
+        <class>br.com.avalia.modelo.academico.Cargo</class>
+        <class>br.com.avalia.modelo.academico.ComponenteCurricular</class>
+        <class>br.com.avalia.modelo.academico.CoordenacaoCurso</class>
+        <class>br.com.avalia.modelo.academico.Curso</class>
+        <class>br.com.avalia.modelo.academico.Designacao</class>
+        <class>br.com.avalia.modelo.academico.DocenteTurma</class>
+        <class>br.com.avalia.modelo.academico.EtlLog</class>
+        <class>br.com.avalia.modelo.academico.Matricula</class>
+        <class>br.com.avalia.modelo.academico.Pessoa</class>
+        <class>br.com.avalia.modelo.academico.Servidor</class>
+        <class>br.com.avalia.modelo.academico.SituacaoServidor</class>
+        <class>br.com.avalia.modelo.academico.StatusDiscente</class>
+        <class>br.com.avalia.modelo.academico.Turma</class>
+        <class>br.com.avalia.modelo.academico.UnidadeClosure</class>
+        <class>br.com.avalia.modelo.avaliacao.ConjuntoOpcao</class>
+        <class>br.com.avalia.modelo.avaliacao.Entidade</class>
+        <class>br.com.avalia.modelo.avaliacao.InstrumentoAvaliativo</class>
+        <class>br.com.avalia.modelo.avaliacao.InstrumentoSessao</class>
+        <class>br.com.avalia.modelo.avaliacao.InstrumentoTipoEntidadeAvaliada</class>
+        <class>br.com.avalia.modelo.avaliacao.InstrumentoTipoEntidadeRespondente</class>
+        <class>br.com.avalia.modelo.avaliacao.OpcaoQuestao</class>
+        <class>br.com.avalia.modelo.avaliacao.Participacao</class>
+        <class>br.com.avalia.modelo.avaliacao.Questao</class>
+        <class>br.com.avalia.modelo.avaliacao.RespostaInstrumento</class>
+        <class>br.com.avalia.modelo.avaliacao.RespostaQuestao</class>
+        <class>br.com.avalia.modelo.avaliacao.SessaoQuestao</class>
+        <class>br.com.avalia.modelo.avaliacao.TipoEntidade</class>
+        <class>br.com.avalia.modelo.avaliacao.TipoEntidadePermissao</class>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
             <property name="hibernate.transaction.jta.platform"

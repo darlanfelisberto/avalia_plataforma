@@ -48,6 +48,7 @@ Esta configuração usa `jakarta.faces.PROJECT_STAGE=Development` para desenvolv
 local. Para produção, altere para `Production` e configure TLS e os demais requisitos
 do ambiente. A interface usa Bootstrap 5.3.9 com tema próprio e recursos locais.
 Veja [como reutilizar o template e integrar o usuário](docs/layout.md).
+Veja também [como criar DAOs com injeção e transações JTA](docs/persistencia.md).
 
 ## PostgreSQL e Hibernate
 
