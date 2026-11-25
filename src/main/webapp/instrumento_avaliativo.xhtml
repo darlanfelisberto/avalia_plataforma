@@ -86,12 +86,12 @@
                               filterable="false">
                         <h:outputText value="#{instrumento.status.descricao}" styleClass="instrument-status"/>
                     </p:column>
-                    <p:column id="colunaInicio" filterable="false" headerText="Início da aplicação" field="inicioAplicacao" sortBy="#{instrumento.inicioAplicacao}">
+                    <p:column id="colunaInicio" filterable="false" headerText="Início" field="inicioAplicacao" sortBy="#{instrumento.inicioAplicacao}">
                         <h:outputText value="#{instrumento.inicioAplicacao.atZoneSameInstant(instrumentoAvalitivoBean.fusoHorario)}">
                             <f:convertDateTime type="zonedDateTime" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
                         </h:outputText>
                     </p:column>
-                    <p:column id="colunaFim" filterable="false" headerText="Fim da aplicação" field="fimAplicacao" sortBy="#{instrumento.fimAplicacao}">
+                    <p:column id="colunaFim" filterable="false" headerText="Fim" field="fimAplicacao" sortBy="#{instrumento.fimAplicacao}">
                         <h:outputText value="#{instrumento.fimAplicacao.atZoneSameInstant(instrumentoAvalitivoBean.fusoHorario)}">
                             <f:convertDateTime type="zonedDateTime" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
                         </h:outputText>
