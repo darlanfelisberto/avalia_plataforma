@@ -65,8 +65,10 @@ public class InstrumentoAvaliativo extends Model<UUID> {
     @Column(name = "permite_edicao", nullable = false)
     private Boolean permiteEdicao;
 
-    @Column(name = "status", nullable = false, length = 12)
-    private String status;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "status", referencedColumnName = "codigo", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_instrumento_avaliativo_status"))
+    private Status status;
 
     @Column(name = "titulo", nullable = false, length = 200)
     private String titulo;
@@ -174,11 +176,11 @@ public class InstrumentoAvaliativo extends Model<UUID> {
         this.permiteEdicao = permiteEdicao;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

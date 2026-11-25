@@ -1,5 +1,6 @@
 package br.com.avalia.modelo;
 
+import br.com.avalia.dao.avaliacao.VerificarPaginacaoInstrumento;
 import br.com.avalia.modelo.academico.Aluno;
 import br.com.avalia.modelo.academico.UnidadeClosureId;
 import jakarta.persistence.Entity;
@@ -92,6 +93,7 @@ public final class ValidarModelo {
                             }
                         }
                     });
+                    VerificarPaginacaoInstrumento.validar(session);
                     for (var entity : factory.getMetamodel().getEntities().stream()
                             .sorted(java.util.Comparator.comparing(jakarta.persistence.metamodel.EntityType::getName))
                             .toList()) {

@@ -1,0 +1,120 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+                xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core" xmlns:p="primefaces">
+    <ui:param name="tituloPagina" value="Instrumentos avaliativos"/>
+    <ui:param name="descricaoPagina" value="Consulte os instrumentos e acompanhe seus períodos de aplicação."/>
+    <ui:param name="menuAtivo" value="avaliacoes"/>
+
+    <ui:define name="styles">
+        <h:outputStylesheet name="styles/instrumento-avaliativo.css"/>
+        <h:outputStylesheet name="styles/primefaces-overrides.css"/>
+    </ui:define>
+
+    <ui:define name="acoesPagina">
+        <h:form id="acoesInstrumentoForm">
+            <p:commandButton id="atualizarLista" value="Atualizar lista"
+                             action="#{instrumentoAvalitivoBean.atualizarLista}"
+                             process="@this" update=":instrumentosForm @form"
+                             styleClass="instrument-refresh"/>
+            <p:messages id="mensagensAcoes" redisplay="false"/>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="conteudo">
+        <h:form id="filtrosInstrumentoForm" styleClass="instrument-filters">
+            <div class="instrument-filters-heading">
+                <h2>Filtrar instrumentos</h2>
+                <span>Combine os campos para refinar a consulta.</span>
+            </div>
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-lg-5">
+                    <h:outputLabel for="titulo" value="Instrumento" styleClass="form-label"/>
+                    <h:inputText id="titulo" value="#{instrumentoAvalitivoBean.titulo}" styleClass="form-control"/>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <h:outputLabel for="ciclo" value="Ciclo" styleClass="form-label"/>
+                    <h:inputText id="ciclo" value="#{instrumentoAvalitivoBean.cicloReferencia}" styleClass="form-control"/>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <h:outputLabel for="status" value="Status" styleClass="form-label"/>
+                    <h:selectOneMenu id="status" value="#{instrumentoAvalitivoBean.status}" styleClass="form-select">
+                        <f:selectItem itemLabel="Todos os status" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{instrumentoAvalitivoBean.statusDisponiveis}" var="status"
+                                       itemLabel="#{status.descricao}" itemValue="#{status.codigo}"/>
+                    </h:selectOneMenu>
+                </div>
+            </div>
+            <div class="instrument-filters-actions">
+                <p:commandButton id="pesquisar" value="Pesquisar" action="#{instrumentoAvalitivoBean.pesquisar}"
+                                 process="@form" update=":instrumentosForm mensagensFiltros" styleClass="instrument-search"/>
+                <p:commandButton id="limpar" value="Limpar filtros" action="#{instrumentoAvalitivoBean.limparFiltros}"
+                                 process="@this" update="@form :instrumentosForm" resetValues="true" styleClass="instrument-clear"/>
+            </div>
+            <p:messages id="mensagensFiltros" redisplay="false"/>
+        </h:form>
+        <h:form id="instrumentosForm">
+            <section class="instrument-list" aria-labelledby="tituloListaInstrumentos">
+                <div class="instrument-list-heading">
+                    <div>
+                        <span class="eyebrow">AVALIAÇÕES</span>
+                        <h2 id="tituloListaInstrumentos">Instrumentos cadastrados</h2>
+                    </div>
+                </div>
+                <p:dataTable id="instrumentosTable" value="#{instrumentoAvalitivoBean.instrumentos}"
+                             var="instrumento" rowKey="#{instrumento.id}"
+                             lazy="true" paginator="true" paginatorPosition="bottom" rows="10"
+                             first="#{instrumentoAvalitivoBean.primeiroRegistro}"
+                             rowsPerPageTemplate="10,25,50" paginatorAlwaysVisible="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="Exibindo {startRecord} a {endRecord} de {totalRecords} instrumentos"
+                             sortMode="single" filterDelay="400" partialUpdate="false"
+                             styleClass="instrument-table"
+                             emptyMessage="#{instrumentoAvalitivoBean.falhaCarregamento ? 'Consulta indisponível. Tente atualizar a lista.' : 'Nenhum instrumento encontrado.'}">
+                    <p:ajax event="page" process="@this" update=":instrumentosForm:estadoConsulta"/>
+                    <p:ajax event="sort" process="@this" update=":instrumentosForm:estadoConsulta"/>
+                    <p:column id="colunaTitulo" headerText="Instrumento" field="titulo" styleClass="instrument-title-column"
+                              sortBy="#{instrumento.titulo}" filterable="false">
+                        <h:outputText value="#{instrumento.titulo}" styleClass="instrument-title"/>
+                        <h:outputText value="#{instrumento.descricao}" styleClass="instrument-description"
+                                      rendered="#{not empty instrumento.descricao}"/>
+                    </p:column>
+                    <p:column id="colunaCiclo" headerText="Ciclo" field="cicloReferencia" sortBy="#{instrumento.cicloReferencia}"
+                              filterable="false">
+                        <h:outputText value="#{instrumento.cicloReferencia}"/>
+                    </p:column>
+                    <p:column id="colunaStatus" headerText="Status" field="status" sortBy="#{instrumento.status.descricao}"
+                              filterable="false">
+                        <h:outputText value="#{instrumento.status.descricao}" styleClass="instrument-status"/>
+                    </p:column>
+                    <p:column id="colunaInicio" filterable="false" headerText="Início da aplicação" field="inicioAplicacao" sortBy="#{instrumento.inicioAplicacao}">
+                        <h:outputText value="#{instrumento.inicioAplicacao.atZoneSameInstant(instrumentoAvalitivoBean.fusoHorario)}">
+                            <f:convertDateTime type="zonedDateTime" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="colunaFim" filterable="false" headerText="Fim da aplicação" field="fimAplicacao" sortBy="#{instrumento.fimAplicacao}">
+                        <h:outputText value="#{instrumento.fimAplicacao.atZoneSameInstant(instrumentoAvalitivoBean.fusoHorario)}">
+                            <f:convertDateTime type="zonedDateTime" pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column id="colunaAnonimo" filterable="false" headerText="Anônimo" field="anonimo" sortBy="#{instrumento.anonimo}">
+                        <h:outputText value="#{instrumento.anonimo ? 'Sim' : 'Não'}"/>
+                    </p:column>
+                </p:dataTable>
+                <div class="instrument-list-footer">
+                    <span>Horários de Brasília</span>
+                    <span class="d-md-none">Deslize para consultar todas as colunas.</span>
+                </div>
+            </section>
+            <h:panelGroup id="estadoConsulta" layout="block">
+                <ui:fragment rendered="#{instrumentoAvalitivoBean.falhaCarregamento}">
+                    <div class="alert alert-danger instrument-load-error" role="alert">
+                        <strong>Não foi possível consultar os instrumentos.</strong>
+                        <span>Tente novamente usando “Atualizar lista”.</span>
+                    </div>
+                </ui:fragment>
+            </h:panelGroup>
+            <p:messages id="mensagens" redisplay="false"/>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

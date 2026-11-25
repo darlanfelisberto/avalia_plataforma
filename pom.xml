@@ -16,9 +16,15 @@
         <liberty.maven.plugin.version>3.12.5</liberty.maven.plugin.version>
         <hibernate.version>7.4.17.Final</hibernate.version>
         <postgresql.version>42.7.14</postgresql.version>
+        <primefaces.version>16.0.2</primefaces.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-web-api</artifactId>

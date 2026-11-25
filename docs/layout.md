@@ -47,7 +47,8 @@ Blocos disponíveis para personalização:
 | `avatarUsuario` | Avatar ou iniciais |
 | `acoesTopo` | Ações adicionais na barra superior |
 | `menuAdicional` | Entradas extras no menu |
-| `head` | Metadados e estilos específicos da página |
+| `head` | Metadados específicos da página |
+| `styles` | Estilos da página, declarados no body e relocados ao head pelo Faces |
 | `scripts` | Scripts específicos da página |
 
 Textos vindos do usuário são escapados pela renderização padrão do Faces.
@@ -70,6 +71,7 @@ e tag files ficam protegidos de acesso HTTP direto em `WEB-INF`.
 O CSS usa variáveis `--av-*` para cores e medidas. Os estilos personalizados
 ficam em arquivo separado. A licença MIT do Bootstrap acompanha a distribuição.
 
-A página inicial demonstra o layout. As páginas de avaliações, questões,
-comunidade e relatórios são bases visuais para os módulos futuros, com indicação
-de que estão em preparação. Ainda não implementam os respectivos cadastros.
+A página inicial demonstra o layout. O menu Avaliações abre a listagem real em
+`instrumento_avaliativo.xhtml`. O endereço antigo `avaliacoes.xhtml` redireciona
+para essa página. As páginas de questões, comunidade e relatórios são bases
+visuais para os módulos futuros, com indicação de que estão em preparação.

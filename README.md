@@ -49,6 +49,7 @@ local. Para produção, altere para `Production` e configure TLS e os demais req
 do ambiente. A interface usa Bootstrap 5.3.9 com tema próprio e recursos locais.
 Veja [como reutilizar o template e integrar o usuário](docs/layout.md).
 Veja também [como criar DAOs com injeção e transações JTA](docs/persistencia.md).
+O menu Avaliações abre a [listagem de instrumentos avaliativos](docs/instrumento-avaliativo.md).
 
 ## PostgreSQL e Hibernate
 
@@ -86,13 +87,13 @@ preparadas no PostgreSQL. Transações com apenas esse datasource não precisam 
 
 ## Entidades do banco existente
 
-As 29 tabelas foram mapeadas em `src/main/java/br/com/avalia/modelo`:
+As 30 tabelas foram mapeadas em `src/main/java/br/com/avalia/modelo`:
 
 - `academico`: 15 entidades e a chave composta `UnidadeClosureId`.
-- `avaliacao`: 14 entidades.
+- `avaliacao`: 15 entidades, incluindo o cadastro de `Status`.
 
 As classes usam anotações Jakarta Persistence, construtores sem argumentos,
-getters e setters explícitos, sem Lombok. Os 35 relacionamentos declarados no
+getters e setters explícitos, sem Lombok. Os 36 relacionamentos declarados no
 banco usam `@ManyToOne(fetch = LAZY)`, sem cascatas de remoção na aplicação.
 As tabelas de associação também possuem suas próprias entidades.
 
@@ -112,7 +113,10 @@ Não há atualização automática de timestamps em Java; vale a regra existente
 Colunas sem chave estrangeira declarada continuam como identificadores simples,
 incluindo referências a unidades e `InstrumentoAvaliativo.tipoEntidadeAvaliadaId`.
 Os campos `tipo` e `tiposessao` de `InstrumentoSessao` permanecem distintos,
-conforme a tabela existente. Valores de status e tipo continuam como `String`.
+conforme a tabela existente. O status do instrumento é uma associação à entidade
+`Status`, com chave estrangeira pelo código existente. Os demais valores de status
+e tipo permanecem como `String`. A migração do cadastro de status está em
+`scripts/sql/001-criar-status-instrumento.sql`, já aplicada à base local.
 
 Para validar o modelo contra a base local:
 
@@ -130,7 +134,7 @@ Liberty, JSON-B continua sendo fornecido pela feature `jsonb-3.0`.
 
 ### Identidade das entidades
 
-As 29 entidades estendem `Model<ID>` e implementam `getId()` com o tipo da chave
+As 30 entidades estendem `Model<ID>` e implementam `getId()` com o tipo da chave
 correspondente (`Integer`, `UUID` ou `UnidadeClosureId`). Os getters originais,
 como `getIdPessoa()` e `getQuestaoId()`, continuam disponíveis.
 `equals()` e `hashCode()` são centralizados em `Model` e consideram o tipo da
@@ -142,4 +146,4 @@ chave composta, com sua própria igualdade baseada nos dois componentes.
 Como o hash depende do ID, atribua ou gere o identificador antes de usar a
 entidade como chave de `HashMap` ou elemento de `HashSet`, e não altere essa chave
 enquanto ela estiver na coleção. A validação de integração também verifica os
-contratos de identidade e a comparação com proxies detached das 29 entidades.
+contratos de identidade e a comparação com proxies detached das 30 entidades.

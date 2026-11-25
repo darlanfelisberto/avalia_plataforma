@@ -5,11 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="theme-color" content="#112b36"/>
         <title>#{empty tituloPagina ? 'Avalia' : tituloPagina.concat(' · Avalia')}</title>
-        <h:outputStylesheet name="styles/vendor/bootstrap.min.css"/>
-        <h:outputStylesheet name="styles/layout.css"/>
         <ui:insert name="head"/>
     </h:head>
     <h:body styleClass="app-body">
+        <h:outputStylesheet name="styles/vendor/bootstrap.min.css"/>
+        <h:outputStylesheet name="styles/layout.css"/>
+        <ui:insert name="styles"/>
         <a class="skip-link" href="#conteudoPrincipal">Ir para o conteúdo</a>
         <div class="app-shell">
             <ui:include src="/WEB-INF/includes/menu-lateral.xhtml">

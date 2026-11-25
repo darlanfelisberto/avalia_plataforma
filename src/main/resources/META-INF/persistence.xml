@@ -25,6 +25,7 @@
         <class>br.com.avalia.modelo.avaliacao.ConjuntoOpcao</class>
         <class>br.com.avalia.modelo.avaliacao.Entidade</class>
         <class>br.com.avalia.modelo.avaliacao.InstrumentoAvaliativo</class>
+        <class>br.com.avalia.modelo.avaliacao.Status</class>
         <class>br.com.avalia.modelo.avaliacao.InstrumentoSessao</class>
         <class>br.com.avalia.modelo.avaliacao.InstrumentoTipoEntidadeAvaliada</class>
         <class>br.com.avalia.modelo.avaliacao.InstrumentoTipoEntidadeRespondente</class>

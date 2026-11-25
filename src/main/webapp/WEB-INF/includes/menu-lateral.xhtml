@@ -16,7 +16,7 @@
         <nav class="sidebar-navigation" aria-label="Menu principal">
             <span class="navigation-label">PRINCIPAL</span>
             <h:link outcome="/index" styleClass="sidebar-link #{itemMenuAtivo eq 'inicio' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'inicio' ? 'page' : null}"><t:icone nome="grid"/><span>Visão geral</span></h:link>
-            <h:link outcome="/avaliacoes" styleClass="sidebar-link #{itemMenuAtivo eq 'avaliacoes' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'avaliacoes' ? 'page' : null}"><t:icone nome="clipboard"/><span>Avaliações</span></h:link>
+            <h:link outcome="/instrumento_avaliativo" styleClass="sidebar-link #{itemMenuAtivo eq 'avaliacoes' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'avaliacoes' ? 'page' : null}"><t:icone nome="clipboard"/><span>Avaliações</span></h:link>
             <h:link outcome="/questoes" styleClass="sidebar-link #{itemMenuAtivo eq 'questoes' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'questoes' ? 'page' : null}"><t:icone nome="layers"/><span>Banco de questões</span></h:link>
             <h:link outcome="/comunidade" styleClass="sidebar-link #{itemMenuAtivo eq 'comunidade' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'comunidade' ? 'page' : null}"><t:icone nome="users"/><span>Comunidade</span></h:link>
             <span class="navigation-label navigation-label-secondary">ACOMPANHAMENTO</span>
