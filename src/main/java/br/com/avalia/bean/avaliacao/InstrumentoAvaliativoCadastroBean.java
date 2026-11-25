@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +42,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     private List<TipoEntidade> tipos;
     private List<ConjuntoOpcao> conjuntos;
     private List<InstrumentoSessao> sessoes;
+    private Map<UUID, List<SessaoQuestao>> questoesPorSessao;
     private List<SessaoQuestao> questoes;
     private InstrumentoSessao sessao;
     private UUID sessaoSelecionadaId;
@@ -52,7 +56,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         instrumento.setAnonimo(true); instrumento.setPermiteEdicao(true);
         codigoStatus = "RASCUNHO";
         statusDisponiveis = statusDAO.listarTodos(); tipos = dao.tiposAvaliados(); conjuntos = dao.conjuntos();
-        sessoes = List.of(); questoes = List.of(); novaSessao(); novaQuestao();
+        sessoes = List.of(); questoesPorSessao = new LinkedHashMap<>(); questoes = List.of(); novaSessao(); novaQuestao();
     }
 
     public String carregar() {
@@ -68,7 +72,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         pessoaId = encontrado.getPessoa()==null ? null : encontrado.getPessoa().getId();
         inicio = local(encontrado.getInicioAplicacao()); fim = local(encontrado.getFimAplicacao());
         consolidado = local(encontrado.getConsolidadoEm());
-        sessoes = dao.sessoes(instrumentoSalvoId);
+        carregarEstrutura();
         return null;
     }
 
@@ -101,7 +105,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     public void salvarSessao() {
         executar(() -> {
             var salva = dao.gravarSessao(instrumentoSalvoId, sessao);
-            sessoes = dao.sessoes(instrumentoSalvoId); sessaoSelecionadaId = salva.getId();
+            carregarEstrutura(); sessaoSelecionadaId = salva.getId();
             selecionarSessao(); novaSessao();
             org.primefaces.PrimeFaces.current().ajax().update("abas:sessoesForm", "questoesDialogForm");
             mensagem(FacesMessage.SEVERITY_INFO, "Sessão salva. Cadastre suas questões abaixo.");
@@ -112,6 +116,16 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         sessaoSelecionadaId = item.getId();
         tituloSessaoSelecionada = item.getTitulo();
         selecionarSessao();
+    }
+
+    private void carregarEstrutura() {
+        sessoes = dao.sessoes(instrumentoSalvoId);
+        Map<UUID, List<SessaoQuestao>> agrupadas = new LinkedHashMap<>();
+        sessoes.forEach(s -> agrupadas.put(s.getId(), new ArrayList<>()));
+        for (var vinculo : dao.questoesDoInstrumento(instrumentoSalvoId)) {
+            agrupadas.get(vinculo.getInstrumentoSessao().getId()).add(vinculo);
+        }
+        questoesPorSessao = agrupadas;
     }
 
     public void selecionarSessao() {
@@ -135,6 +149,8 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     public void salvarQuestao() {
         executar(() -> {
             dao.gravarQuestao(instrumentoSalvoId, sessaoSelecionadaId, questao, conjuntoId);
+            carregarEstrutura();
+            org.primefaces.PrimeFaces.current().ajax().update("abas:sessoesForm");
             selecionarSessao(); mensagem(FacesMessage.SEVERITY_INFO, "Questão salva na sessão.");
         });
     }
@@ -170,6 +186,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     public List<TipoEntidade> getTipos() { return tipos; }
     public List<ConjuntoOpcao> getConjuntos() { return conjuntos; }
     public List<InstrumentoSessao> getSessoes() { return sessoes; }
+    public Map<UUID, List<SessaoQuestao>> getQuestoesPorSessao() { return questoesPorSessao; }
     public List<SessaoQuestao> getQuestoes() { return questoes; }
     public InstrumentoSessao getSessao() { return sessao; }
     public SessaoQuestao getQuestao() { return questao; }

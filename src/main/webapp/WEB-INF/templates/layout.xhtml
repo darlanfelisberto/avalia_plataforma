@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets" xmlns:t="avalia.tags">
+<html lang="pt-BR" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets" xmlns:t="avalia.tags" xmlns:p="primefaces">
     <ui:insert name="metadata"/>
     <h:head>
         <meta charset="UTF-8"/>
@@ -25,7 +25,9 @@
                             A página expirou e foi recarregada. Preencha novamente os campos que ainda não haviam sido enviados.
                         </div>
                     </ui:fragment>
-                    <h:messages id="mensagensGlobais" globalOnly="true" redisplay="false" styleClass="app-messages"/>
+                    <p:growl id="mensagensGlobais" showSummary="true" showDetail="false" redisplay="false" life="8000">
+                        <p:autoUpdate/>
+                    </p:growl>
                     <ui:insert name="conteudo"/>
                 </main>
                 <footer class="app-footer">

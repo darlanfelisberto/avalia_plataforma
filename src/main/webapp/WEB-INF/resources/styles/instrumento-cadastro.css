@@ -3,6 +3,7 @@
 .cadastro-heading p, .cadastro-help { color:#718378; font-size:13px; }
 .cadastro-form { padding:24px; }
 .cadastro-form h2 { font-size:18px; color:#274a3b; margin-bottom:20px; }
+.cadastro-form h3 { font-size:16px; color:#274a3b; margin-bottom:16px; }
 .cadastro-form .form-label { font-size:13px; font-weight:600; color:#4b6556; }
 .cadastro-form .form-control, .cadastro-form .form-select { font-size:14px; }
 .cadastro-actions { display:flex; gap:12px; flex-wrap:wrap; margin:24px 0; }
@@ -11,4 +12,19 @@
 .cadastro-auditoria { margin-top:24px; font-size:12px; color:#718378; overflow-wrap:anywhere; }
 .cadastro-auditoria dt { font-weight:600; }
 .cadastro-divider { border-top:1px solid #dce7df; margin-top:20px; }
+.instrumento-sessao { border:1px solid #dce7df; border-radius:12px; background:white; margin-bottom:24px; overflow:hidden; }
+.instrumento-sessao-cabecalho { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; padding:22px; background:#f1f6f3; border-bottom:1px solid #dce7df; }
+.instrumento-sessao-ordem { font-size:11px; font-weight:600; color:#678674; text-transform:uppercase; letter-spacing:1px; }
+.instrumento-sessao-cabecalho h3 { margin:6px 0; font-size:18px; }
+.instrumento-sessao-descricao { font-size:13px; color:#718378; white-space:pre-line; }
+.instrumento-sessao-acoes { display:flex; gap:8px; flex-shrink:0; }
+.instrumento-sessao-questoes { padding:4px 22px; }
+.instrumento-sessao-questoes > .cadastro-help { margin:18px 0; }
+.instrumento-questao { display:flex; gap:14px; padding:20px 0; border-bottom:1px solid #edf1ee; }
+.instrumento-questao:last-child { border-bottom:0; }
+.instrumento-questao-numero { display:flex; justify-content:center; align-items:center; flex-shrink:0; width:30px; height:30px; border-radius:8px; background:#edf4ef; color:#276b50; font-size:13px; font-weight:600; }
+.instrumento-questao-conteudo { min-width:0; }
+.cadastro-form .instrumento-questao h4 { font-size:15px; font-weight:500; line-height:1.6; white-space:pre-line; overflow-wrap:anywhere; margin:0 0 10px; color:#2b4437; }
+.instrumento-questao-detalhes { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:11px; color:#718378; }
+@media(max-width:767.98px) { .instrumento-sessao-cabecalho { flex-direction:column; padding:16px; } .instrumento-sessao-questoes { padding:4px 16px; } }
 @media(max-width:767.98px) { .cadastro-form { padding:14px; } .cadastro-heading h1 { font-size:21px; } }

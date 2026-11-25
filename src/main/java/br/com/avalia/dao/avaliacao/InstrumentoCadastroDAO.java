@@ -62,6 +62,17 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
                 .setParameter("sessao", sessaoId).setParameter("instrumento", instrumentoId).getResultList();
     }
 
+    public List<SessaoQuestao> questoesDoInstrumento(UUID instrumentoId) {
+        return entityManager.createQuery("""
+                select sq from SessaoQuestao sq
+                join fetch sq.instrumentoSessao s
+                join fetch sq.questao q
+                left join fetch q.conjuntoOpcao
+                where s.instrumentoAvaliativo.instrumentoAvaliativoId=:instrumento
+                order by s.ordem, s.instrumentoSessaoId, sq.ordem, sq.sessaoQuestaoId
+                """, SessaoQuestao.class).setParameter("instrumento", instrumentoId).getResultList();
+    }
+
     @Transactional
     public InstrumentoSessao gravarSessao(UUID instrumentoId, InstrumentoSessao dados) {
         var instrumento = instrumentoSalvo(instrumentoId);

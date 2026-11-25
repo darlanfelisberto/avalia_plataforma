@@ -39,12 +39,12 @@
             </div>
             <div class="instrument-filters-actions">
                 <p:commandButton id="pesquisar" value="Pesquisar" action="#{instrumentoAvalitivoBean.pesquisar}"
-                                 process="@form" update=":instrumentosForm mensagensFiltros" styleClass="instrument-search"/>
+                                 process="@form" update=":instrumentosForm" styleClass="instrument-search"/>
                 <p:commandButton id="limpar" value="Limpar filtros" action="#{instrumentoAvalitivoBean.limparFiltros}"
                                  process="@this" update="@form :instrumentosForm" resetValues="true" styleClass="instrument-clear"/>
                 <h:link id="novoInstrumento" outcome="/instrumento_avaliativo_cadastro" value="Novo instrumento" styleClass="btn btn-avalia"/>
             </div>
-            <p:messages id="mensagensFiltros" redisplay="false"/>
+
         </h:form>
         <h:form id="instrumentosForm">
             <section class="instrument-list" aria-labelledby="tituloListaInstrumentos">
@@ -111,7 +111,7 @@
                     </div>
                 </ui:fragment>
             </h:panelGroup>
-            <p:messages id="mensagens" redisplay="false"/>
+
         </h:form>
     </ui:define>
 </ui:composition>

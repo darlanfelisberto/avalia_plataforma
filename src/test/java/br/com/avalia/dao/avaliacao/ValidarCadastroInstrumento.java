@@ -54,6 +54,10 @@ public final class ValidarCadastroInstrumento {
                     var vinculada = dao.gravarQuestao(id, sessaoId, questao, null);
                     UUID vinculoId = vinculada.getId(); session.clear();
                     var lista = dao.questoes(id, sessaoId);
+                    check(dao.questoesDoInstrumento(id).size()==1
+                            && dao.questoesDoInstrumento(id).getFirst().getInstrumentoSessao().getId().equals(sessaoId),
+                            "Visão completa deve agrupar a questão na sessão correta");
+                    check(dao.questoesDoInstrumento(outra.getId()).isEmpty(), "Visão completa deve isolar os instrumentos");
                     check(lista.size()==1 && lista.getFirst().getQuestao().getCriadoPor().equals("validacao_rollback"), "Questão e vínculo gravados atomicamente");
                     var editar = new SessaoQuestao(); editar.setSessaoQuestaoId(vinculoId); editar.setQuestao(new Questao());
                     editar.getQuestao().setTipo("TEXTO"); editar.getQuestao().setEnunciado("Questão editada");

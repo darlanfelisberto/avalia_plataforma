@@ -8,7 +8,7 @@
   <p:tabView id="abas" styleClass="instrument-tabs" dynamic="false">
    <p:tab id="dados" title="1. Dados do instrumento">
     <h:form id="dadosForm" styleClass="cadastro-form">
-     <p:messages id="mensagens" redisplay="false"/>
+
      <div class="row g-3">
       <div class="col-12 col-md-6"><h:outputLabel for="titulo" value="Título *" styleClass="form-label"/><h:inputText id="titulo" value="#{instrumentoAvaliativoCadastroBean.instrumento.titulo}" styleClass="form-control" required="true" label="titulo" maxlength="200"/></div>
       <div class="col-12 col-md-6"><h:outputLabel for="ciclo" value="Ciclo de referência *" styleClass="form-label"/><h:inputText id="ciclo" value="#{instrumentoAvaliativoCadastroBean.instrumento.cicloReferencia}" styleClass="form-control" required="true" label="ciclo" maxlength="20"/></div>
@@ -29,18 +29,44 @@
    </p:tab>
    <p:tab id="estrutura" title="2. Sessões e questões" disabled="#{not instrumentoAvaliativoCadastroBean.salvo}">
     <h:form id="sessoesForm" styleClass="cadastro-form">
-     <h2>Sessões do instrumento</h2><p:messages id="mensagens" redisplay="false"/>
-     <div class="cadastro-actions"><p:commandButton id="novaSessao" value="Nova sessão" action="#{instrumentoAvaliativoCadastroBean.novaSessao}" process="@this" update=":sessaoDialogForm" resetValues="true" oncomplete="PF('sessaoDialog').show()"/></div>     <p:dataTable id="sessoes" value="#{instrumentoAvaliativoCadastroBean.sessoes}" var="s" emptyMessage="Nenhuma sessão cadastrada.">
-      <p:column headerText="Ordem"><h:outputText value="#{s.ordem}"/></p:column><p:column headerText="Título"><h:outputText value="#{s.titulo}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{s.tipo}"/></p:column>
-      <p:column headerText="Ações"><p:commandButton icon="pi pi-pencil" title="Editar sessão" pt:aria-label="Editar sessão" action="#{instrumentoAvaliativoCadastroBean.editarSessao(s)}" process="@this" update=":sessaoDialogForm" resetValues="true" oncomplete="PF('sessaoDialog').show()"/><p:commandButton value="Questões" icon="pi pi-list" title="Questões da sessão" action="#{instrumentoAvaliativoCadastroBean.abrirQuestoes(s)}" process="@this" update=":questoesDialogForm" resetValues="true" oncomplete="PF('questoesDialog').show()"/></p:column>
-     </p:dataTable>
+     <h2>Sessões do instrumento</h2>
+     <div class="cadastro-actions"><p:commandButton id="novaSessao" value="Nova sessão" action="#{instrumentoAvaliativoCadastroBean.novaSessao}" process="@this" update=":sessaoDialogForm" resetValues="true" oncomplete="PF('sessaoDialog').show()"/></div>     <ui:fragment rendered="#{empty instrumentoAvaliativoCadastroBean.sessoes}"><p class="cadastro-help">Nenhuma sessão cadastrada. Use Nova sessão para começar.</p></ui:fragment>
+     <ui:repeat id="sessoes" value="#{instrumentoAvaliativoCadastroBean.sessoes}" var="s">
+      <section class="instrumento-sessao">
+       <header class="instrumento-sessao-cabecalho">
+        <div><span class="instrumento-sessao-ordem">Sessão <h:outputText value="#{s.ordem}"/></span><h3><h:outputText value="#{s.titulo}"/></h3><h:outputText value="#{s.descricao}" styleClass="instrumento-sessao-descricao" rendered="#{not empty s.descricao}"/></div>
+        <div class="instrumento-sessao-acoes">
+         <p:commandButton icon="pi pi-pencil" title="Editar sessão" pt:aria-label="Editar sessão" action="#{instrumentoAvaliativoCadastroBean.editarSessao(s)}" process="@this" update=":sessaoDialogForm" resetValues="true" oncomplete="PF('sessaoDialog').show()"/>
+         <p:commandButton value="Questões" icon="pi pi-list" title="Cadastrar ou editar questões desta sessão" action="#{instrumentoAvaliativoCadastroBean.abrirQuestoes(s)}" process="@this" update=":questoesDialogForm" resetValues="true" oncomplete="PF('questoesDialog').show()"/>
+        </div>
+       </header>
+       <div class="instrumento-sessao-questoes">
+        <ui:fragment rendered="#{empty instrumentoAvaliativoCadastroBean.questoesPorSessao[s.id]}"><p class="cadastro-help">Nenhuma questão cadastrada nesta sessão.</p></ui:fragment>
+        <ui:repeat id="questoesDaSessao" value="#{instrumentoAvaliativoCadastroBean.questoesPorSessao[s.id]}" var="q">
+         <article class="instrumento-questao">
+          <span class="instrumento-questao-numero"><h:outputText value="#{q.ordem}"/></span>
+          <div class="instrumento-questao-conteudo">
+           <h4><h:outputText value="#{q.questao.enunciado}"/></h4>
+           <div class="instrumento-questao-detalhes">
+            <span><h:outputText value="#{q.questao.tipo}"/></span>
+            <span><h:outputText value="#{q.obrigatoria ? 'Obrigatória' : 'Opcional'}"/></span>
+            <h:outputText styleClass="instrumento-questao-meta" value="#{q.questao.assunto}" rendered="#{not empty q.questao.assunto}"/>
+            <h:outputText styleClass="instrumento-questao-meta" value="Peso: #{q.peso}" rendered="#{not empty q.peso}"/>
+            <h:outputText styleClass="instrumento-questao-meta" value="#{q.questao.conjuntoOpcao.nome}" rendered="#{not empty q.questao.conjuntoOpcao}"/>
+           </div>
+          </div>
+         </article>
+        </ui:repeat>
+       </div>
+      </section>
+     </ui:repeat>
     </h:form>
 
    </p:tab>
   </p:tabView>
    <p:dialog id="sessaoDialog" widgetVar="sessaoDialog" header="#{empty instrumentoAvaliativoCadastroBean.sessao.id ? 'Nova sessão' : 'Editar sessão'}" modal="true" appendTo="@(body)" responsive="true" fitViewport="true" width="700" styleClass="sessao-dialog">
    <h:form id="sessaoDialogForm" styleClass="cadastro-form">
-    <p:messages id="mensagens" redisplay="false"/>
+
      <div class="row g-3">
       <div class="col-12 col-md-6"><h:outputLabel for="tituloSessao" value="Título da sessão *" styleClass="form-label"/><h:inputText id="tituloSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.titulo}" styleClass="form-control" required="true" label="tituloSessao" maxlength="200"/></div>
       <div class="col-12 col-md-6"><h:outputLabel for="ordemSessao" value="Ordem *" styleClass="form-label"/><h:inputText id="ordemSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.ordem}" styleClass="form-control" required="true" label="Ordem"><f:validateLongRange minimum="1"/></h:inputText></div>
@@ -56,8 +82,14 @@
   </p:dialog>
   <p:dialog id="questoesDialog" widgetVar="questoesDialog" header="Questões da sessão" modal="true" appendTo="@(body)" responsive="true" fitViewport="true" width="900" styleClass="sessao-dialog">
     <h:form id="questoesDialogForm" styleClass="cadastro-form">
-     <h2>Questões da sessão</h2><p:messages id="mensagens" redisplay="false"/>
+     <h2>Questões da sessão</h2>
      <p class="cadastro-help">Sessão: <h:outputText value="#{instrumentoAvaliativoCadastroBean.tituloSessaoSelecionada}"/></p>
+<h3>Questões cadastradas (<h:outputText value="#{instrumentoAvaliativoCadastroBean.questoes.size()}"/>)</h3>
+     <p:dataTable id="questoes" value="#{instrumentoAvaliativoCadastroBean.questoes}" var="q" emptyMessage="Nenhuma questão cadastrada nesta sessão.">
+      <p:column headerText="Ordem"><h:outputText value="#{q.ordem}"/></p:column><p:column headerText="Enunciado"><h:outputText value="#{q.questao.enunciado}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{q.questao.tipo}"/></p:column><p:column headerText="Obrigatória"><h:outputText value="#{q.obrigatoria ? 'Sim' : 'Não'}"/></p:column>
+      <p:column headerText="Ações"><p:commandButton value="Editar questão" action="#{instrumentoAvaliativoCadastroBean.editarQuestao(q)}" process="@this" update="@form" resetValues="true"/></p:column>
+     </p:dataTable>
+<h3 class="mt-4">Cadastro da questão</h3>
      <h:panelGroup id="editorQuestao" layout="block">
       <ui:fragment rendered="#{not empty instrumentoAvaliativoCadastroBean.sessaoSelecionadaId}">
        <div class="row g-3">
@@ -72,10 +104,7 @@
        <div class="cadastro-actions"><p:commandButton id="salvarQuestao" value="Salvar questão" action="#{instrumentoAvaliativoCadastroBean.salvarQuestao}" process="@form" update="@form"/><p:commandButton id="novaQuestao" value="Nova questão" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true"/></div>
       </ui:fragment>
      </h:panelGroup>
-     <p:dataTable id="questoes" value="#{instrumentoAvaliativoCadastroBean.questoes}" var="q" emptyMessage="Nenhuma questão cadastrada nesta sessão.">
-      <p:column headerText="Ordem"><h:outputText value="#{q.ordem}"/></p:column><p:column headerText="Enunciado"><h:outputText value="#{q.questao.enunciado}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{q.questao.tipo}"/></p:column><p:column headerText="Obrigatória"><h:outputText value="#{q.obrigatoria ? 'Sim' : 'Não'}"/></p:column>
-      <p:column headerText="Ações"><p:commandButton value="Editar questão" action="#{instrumentoAvaliativoCadastroBean.editarQuestao(q)}" process="@this" update="@form" resetValues="true"/></p:column>
-     </p:dataTable>
+
      <div class="cadastro-actions"><p:commandButton value="Fechar" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true" oncomplete="PF('questoesDialog').hide()"/></div>
     </h:form>
   </p:dialog>

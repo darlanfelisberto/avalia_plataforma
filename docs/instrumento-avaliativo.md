@@ -74,7 +74,14 @@ um link **Editar** para `instrumento_avaliativo_cadastro.xhtml?id=...`.
   início/fim da aplicação, responsável, pessoa opcional, anonimato, permissão de
   edição e consolidação. UUID e timestamps de criação/atualização são gerados
   pelo servidor e exibidos somente para leitura. Datas de entrada usam Brasília.
-- **Sessões e questões**: bloqueada até a primeira gravação bem-sucedida. O DAO
+- **Sessões e questões**: bloqueada até a primeira gravação bem-sucedida.
+  A aba apresenta uma visão do instrumento usando `ui:repeat` para sessões e
+  outro `ui:repeat` para as questões de cada sessão, imediatamente abaixo de seu
+  cabeçalho. Os blocos têm separação visual, ordem, descrição e metadados das
+  questões. Os popups continuam disponíveis nos botões de cada sessão.
+  A carga usa duas consultas (sessões e questões do instrumento), agrupadas por
+  UUID no bean, sem consultas em getters nem uma consulta por sessão. A visão é
+  atualizada por Ajax após salvar uma sessão ou questão. O DAO
   também exige um instrumento persistido, independentemente do bloqueio visual.
   Sessões têm título, descrição, ordem, tipo e classificação opcional. Os campos
   são preenchidos em popup aberto por **Nova sessão** ou **Editar sessão**.
