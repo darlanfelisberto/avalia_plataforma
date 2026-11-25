@@ -62,8 +62,46 @@ em conexão somente leitura, duas páginas reais, limites, ordenação, contagem
 filtros e o tratamento literal dos caracteres de LIKE. Nenhum registro extra é
 necessário para os testes de páginas com dois registros.
 
-Esta etapa implementa a listagem; os formulários de inclusão e edição serão
-incorporados ao cadastro nas próximas etapas.
+O botão **Novo instrumento** fica ao lado de **Limpar filtros**. Cada linha tem
+um link **Editar** para `instrumento_avaliativo_cadastro.xhtml?id=...`.
+
+## Cadastro em abas
+
+`InstrumentoAvaliativoCadastroBean` controla o formulário, em `@ViewScoped`.
+`InstrumentoCadastroDAO` é `@RequestScoped`; as gravações usam `@Transactional`.
+
+- **Dados do instrumento**: título, descrição, ciclo, status, entidade avaliada,
+  início/fim da aplicação, responsável, pessoa opcional, anonimato, permissão de
+  edição e consolidação. UUID e timestamps de criação/atualização são gerados
+  pelo servidor e exibidos somente para leitura. Datas de entrada usam Brasília.
+- **Sessões e questões**: bloqueada até a primeira gravação bem-sucedida. O DAO
+  também exige um instrumento persistido, independentemente do bloqueio visual.
+  Sessões têm título, descrição, ordem, tipo e classificação opcional. Os campos
+  `tipo` e `tiposessao` permanecem distintos, conforme o schema existente.
+- Depois de salvar uma sessão, ela fica selecionada para cadastrar questões.
+  As questões têm enunciado, assunto, tipo, conjunto de opções opcional, ordem,
+  peso e obrigatoriedade. Há ações de editar e iniciar uma nova sessão/questão.
+  A questão e seu vínculo em `sessao_questao` são salvos na mesma transação.
+
+Cada formulário tem processamento próprio. Salvar uma sessão ou questão não
+submete os dados da primeira aba. O primeiro salvamento do instrumento usa
+POST-Redirect-GET, incluindo o UUID na URL para permitir recarregar a edição.
+O bean só libera a segunda aba depois de o DAO retornar com a transação concluída.
+
+O fim deve ser posterior ao início; ordens devem ser positivas, e o peso aceita
+0 a 9999,99 com até duas casas decimais. Status e entidade são selecionados de
+registros existentes. O tipo da questão permanece textual (até 16 caracteres),
+como no modelo atual. Criação de conjuntos e alternativas não integra esta tela;
+o menu permite selecionar os conjuntos já cadastrados.
+
+Ainda sem autenticação, o responsável é informado explicitamente, sem atribuir
+um usuário fictício. Esse identificador também é usado na criação das questões.
+Vínculos de sessão são validados contra o instrumento antes de qualquer gravação.
+
+Execute `.\scripts\Validar-CadastroInstrumento.ps1` para validar gravação, edição,
+auditoria, períodos e vínculos em transação com rollback. Os testes não mantêm
+registros novos. A validação visual também confirmou o bloqueio/liberação da aba,
+os campos obrigatórios e o cadastro de sessão e questão.
 
 ## Cadastro de status
 

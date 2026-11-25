@@ -17,7 +17,7 @@
     <ui:define name="conteudo">
         <h:form id="filtrosInstrumentoForm" styleClass="instrument-filters">
             <div class="instrument-filters-heading">
-                <h2>Filtrar instrumentos</h2>
+                <h2>Filtrar Instrumentos Avaliativos</h2>
             </div>
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-5">
@@ -42,6 +42,7 @@
                                  process="@form" update=":instrumentosForm mensagensFiltros" styleClass="instrument-search"/>
                 <p:commandButton id="limpar" value="Limpar filtros" action="#{instrumentoAvalitivoBean.limparFiltros}"
                                  process="@this" update="@form :instrumentosForm" resetValues="true" styleClass="instrument-clear"/>
+                <h:link id="novoInstrumento" outcome="/instrumento_avaliativo_cadastro" value="Novo instrumento" styleClass="btn btn-avalia"/>
             </div>
             <p:messages id="mensagensFiltros" redisplay="false"/>
         </h:form>
@@ -90,6 +91,11 @@
                     </p:column>
                     <p:column id="colunaAnonimo" filterable="false" headerText="Anônimo" field="anonimo" sortBy="#{instrumento.anonimo}">
                         <h:outputText value="#{instrumento.anonimo ? 'Sim' : 'Não'}"/>
+                    </p:column>
+                    <p:column headerText="Ações" filterable="false" sortable="false">
+                        <h:link outcome="/instrumento_avaliativo_cadastro" value="Editar" styleClass="btn btn-sm btn-outline-secondary">
+                            <f:param name="id" value="#{instrumento.id}"/>
+                        </h:link>
                     </p:column>
                 </p:dataTable>
                 <div class="instrument-list-footer">

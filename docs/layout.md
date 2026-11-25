@@ -39,6 +39,7 @@ Blocos disponíveis para personalização:
 | Bloco | Uso |
 | --- | --- |
 | `conteudo` | Conteúdo principal |
+| `metadata` | `f:metadata` com parâmetros de URL e ações de carregamento por GET |
 | `acoesPagina` | Ações no início do conteúdo, alinhadas à direita |
 | `cabecalhoPagina` | Substituição completa do cabeçalho da página |
 | `usuario` | Área completa de identificação do usuário |

@@ -1,0 +1,71 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+ xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:p="primefaces" xmlns:pt="jakarta.faces.passthrough">
+ <ui:param name="menuAtivo" value="avaliacoes"/>
+ <ui:define name="metadata"><f:metadata><f:viewParam name="id" value="#{instrumentoAvaliativoCadastroBean.id}"/><f:viewAction action="#{instrumentoAvaliativoCadastroBean.carregar}"/></f:metadata></ui:define>
+ <ui:define name="styles"><h:outputStylesheet name="styles/instrumento-cadastro.css"/><h:outputStylesheet name="styles/primefaces-overrides.css"/></ui:define>
+ <ui:define name="conteudo">
+  <div class="cadastro-heading"><div><h1>Cadastro de instrumento avaliativo</h1><p>Salve os dados do instrumento para organizar suas sessões e questões. Horários de Brasília.</p></div><h:link outcome="/instrumento_avaliativo" value="Voltar à listagem" styleClass="btn btn-outline-secondary"/></div>
+  <p:tabView id="abas" styleClass="instrument-tabs" dynamic="false">
+   <p:tab id="dados" title="1. Dados do instrumento">
+    <h:form id="dadosForm" styleClass="cadastro-form">
+     <p:messages id="mensagens" redisplay="false"/>
+     <div class="row g-3">
+      <div class="col-12 col-md-6"><h:outputLabel for="titulo" value="Título *" styleClass="form-label"/><h:inputText id="titulo" value="#{instrumentoAvaliativoCadastroBean.instrumento.titulo}" styleClass="form-control" required="true" label="titulo" maxlength="200"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="ciclo" value="Ciclo de referência *" styleClass="form-label"/><h:inputText id="ciclo" value="#{instrumentoAvaliativoCadastroBean.instrumento.cicloReferencia}" styleClass="form-control" required="true" label="ciclo" maxlength="20"/></div>
+      <div class="col-12"><h:outputLabel for="descricao" value="Descrição" styleClass="form-label"/><h:inputTextarea id="descricao" value="#{instrumentoAvaliativoCadastroBean.instrumento.descricao}" styleClass="form-control" rows="3" required="false" label="descricao"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="status" value="Status *" styleClass="form-label"/><h:selectOneMenu id="status" value="#{instrumentoAvaliativoCadastroBean.codigoStatus}" styleClass="form-select" required="true" label="status"><f:selectItem itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.statusDisponiveis}" var="opcao" itemLabel="#{opcao.descricao}" itemValue="#{opcao.codigo}"/></h:selectOneMenu></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="tipoEntidade" value="Entidade avaliada *" styleClass="form-label"/><h:selectOneMenu id="tipoEntidade" value="#{instrumentoAvaliativoCadastroBean.instrumento.tipoEntidadeAvaliadaId}" styleClass="form-select" required="true" label="tipoEntidade"><f:selectItem itemLabel="Selecione" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.tipos}" var="opcao" itemLabel="#{opcao.nome}" itemValue="#{opcao.id}"/></h:selectOneMenu></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="inicio" value="Início da aplicação *" styleClass="form-label"/><h:inputText id="inicio" value="#{instrumentoAvaliativoCadastroBean.inicio}" pt:type="datetime-local" styleClass="form-control" required="true" label="inicio"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/></h:inputText></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="fim" value="Fim da aplicação *" styleClass="form-label"/><h:inputText id="fim" value="#{instrumentoAvaliativoCadastroBean.fim}" pt:type="datetime-local" styleClass="form-control" required="true" label="fim"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/></h:inputText></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="responsavel" value="Responsável pelo cadastro *" styleClass="form-label"/><h:inputText id="responsavel" value="#{instrumentoAvaliativoCadastroBean.instrumento.criadoPor}" styleClass="form-control" required="true" label="responsavel" maxlength="60"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="pessoa" value="ID da pessoa responsável (opcional)" styleClass="form-label"/><h:inputText id="pessoa" value="#{instrumentoAvaliativoCadastroBean.pessoaId}" styleClass="form-control" required="false" label="pessoa" maxlength="10"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="consolidado" value="Consolidado em (opcional)" styleClass="form-label"/><h:inputText id="consolidado" value="#{instrumentoAvaliativoCadastroBean.consolidado}" pt:type="datetime-local" styleClass="form-control" required="false" label="consolidado"><f:convertDateTime type="localDateTime" pattern="yyyy-MM-dd'T'HH:mm"/></h:inputText></div>
+      <div class="col-12 col-md-6 cadastro-checks"><div><h:selectBooleanCheckbox id="anonimo" value="#{instrumentoAvaliativoCadastroBean.instrumento.anonimo}" styleClass="form-check-input"/><h:outputLabel for="anonimo" value="Respostas anônimas"/></div><div><h:selectBooleanCheckbox id="permiteEdicao" value="#{instrumentoAvaliativoCadastroBean.instrumento.permiteEdicao}" styleClass="form-check-input"/><h:outputLabel for="permiteEdicao" value="Permitir edição das respostas"/></div></div>
+     </div>
+     <ui:fragment rendered="#{instrumentoAvaliativoCadastroBean.salvo}"><dl class="cadastro-auditoria"><dt>Identificador</dt><dd><h:outputText value="#{instrumentoAvaliativoCadastroBean.instrumento.id}"/></dd><dt>Criado em</dt><dd><h:outputText value="#{instrumentoAvaliativoCadastroBean.instrumento.criadoEm}"/></dd><dt>Atualizado em</dt><dd><h:outputText value="#{instrumentoAvaliativoCadastroBean.instrumento.atualizadoEm}"/></dd></dl></ui:fragment>
+     <div class="cadastro-actions"><p:commandButton id="salvar" value="Salvar instrumento" action="#{instrumentoAvaliativoCadastroBean.salvar}" process="@form" update=":abas" /></div>
+     <h:outputText styleClass="cadastro-help" value="A segunda aba será habilitada após salvar." rendered="#{not instrumentoAvaliativoCadastroBean.salvo}"/>
+    </h:form>
+   </p:tab>
+   <p:tab id="estrutura" title="2. Sessões e questões" disabled="#{not instrumentoAvaliativoCadastroBean.salvo}">
+    <h:form id="sessoesForm" styleClass="cadastro-form">
+     <h2>Sessões do instrumento</h2><p:messages id="mensagens" redisplay="false"/>
+     <div class="row g-3">
+      <div class="col-12 col-md-6"><h:outputLabel for="tituloSessao" value="Título da sessão *" styleClass="form-label"/><h:inputText id="tituloSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.titulo}" styleClass="form-control" required="true" label="tituloSessao" maxlength="200"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="ordemSessao" value="Ordem *" styleClass="form-label"/><h:inputText id="ordemSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.ordem}" styleClass="form-control" required="true" label="Ordem"><f:validateLongRange minimum="1"/></h:inputText></div>
+      <div class="col-12"><h:outputLabel for="descricaoSessao" value="Descrição" styleClass="form-label"/><h:inputTextarea id="descricaoSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.descricao}" styleClass="form-control" rows="3" required="false" label="descricaoSessao"/></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="tipoSessao" value="Tipo *" styleClass="form-label"/><h:selectOneMenu id="tipoSessao" value="#{instrumentoAvaliativoCadastroBean.sessao.tipo}" styleClass="form-select" required="true"><f:selectItem itemLabel="Sessão" itemValue="SESSAO"/><f:selectItem itemLabel="Página" itemValue="PAGINA"/></h:selectOneMenu></div>
+      <div class="col-12 col-md-6"><h:outputLabel for="classificacao" value="Classificação (opcional)" styleClass="form-label"/><h:selectOneMenu id="classificacao" value="#{instrumentoAvaliativoCadastroBean.sessao.tiposessao}" styleClass="form-select"><f:selectItem itemLabel="Sem classificação" itemValue="#{null}" noSelectionOption="true"/><f:selectItem itemLabel="Sessão" itemValue="SESSAO"/><f:selectItem itemLabel="Página" itemValue="PAGINA"/></h:selectOneMenu></div>
+     </div>
+     <div class="cadastro-actions"><p:commandButton id="salvarSessao" value="Salvar sessão" action="#{instrumentoAvaliativoCadastroBean.salvarSessao}" process="@form" update="@form :abas:questoesForm" resetValues="true"/><p:commandButton id="novaSessao" value="Nova sessão" action="#{instrumentoAvaliativoCadastroBean.novaSessao}" process="@this" update="@form" resetValues="true"/></div>
+     <p:dataTable id="sessoes" value="#{instrumentoAvaliativoCadastroBean.sessoes}" var="s" emptyMessage="Nenhuma sessão cadastrada.">
+      <p:column headerText="Ordem"><h:outputText value="#{s.ordem}"/></p:column><p:column headerText="Título"><h:outputText value="#{s.titulo}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{s.tipo}"/></p:column>
+      <p:column headerText="Ações"><p:commandButton value="Editar sessão" action="#{instrumentoAvaliativoCadastroBean.editarSessao(s)}" process="@this" update="@form" resetValues="true"/></p:column>
+     </p:dataTable>
+    </h:form>
+    <h:form id="questoesForm" styleClass="cadastro-form cadastro-divider">
+     <h2>Questões da sessão</h2><p:messages id="mensagens" redisplay="false"/>
+     <div class="col-12"><h:outputLabel for="sessaoSelecionada" value="Sessão *" styleClass="form-label"/><h:selectOneMenu id="sessaoSelecionada" value="#{instrumentoAvaliativoCadastroBean.sessaoSelecionadaId}" styleClass="form-select" required="true" label="Sessão"><f:selectItem itemLabel="Selecione uma sessão salva" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.sessoes}" var="opcao" itemLabel="#{opcao.ordem} · #{opcao.titulo}" itemValue="#{opcao.id}"/><p:ajax listener="#{instrumentoAvaliativoCadastroBean.selecionarSessao}" process="@this" update="@form" resetValues="true"/></h:selectOneMenu></div>
+     <h:panelGroup id="editorQuestao" layout="block">
+      <ui:fragment rendered="#{not empty instrumentoAvaliativoCadastroBean.sessaoSelecionadaId}">
+       <div class="row g-3">
+        <div class="col-12"><h:outputLabel for="enunciado" value="Enunciado *" styleClass="form-label"/><h:inputTextarea id="enunciado" value="#{instrumentoAvaliativoCadastroBean.questao.questao.enunciado}" styleClass="form-control" rows="3" required="true" label="enunciado"/></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="assunto" value="Assunto" styleClass="form-label"/><h:inputText id="assunto" value="#{instrumentoAvaliativoCadastroBean.questao.questao.assunto}" styleClass="form-control" required="false" label="assunto" maxlength="100"/></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="tipoQuestao" value="Tipo da questão *" styleClass="form-label"/><h:inputText id="tipoQuestao" value="#{instrumentoAvaliativoCadastroBean.questao.questao.tipo}" styleClass="form-control" required="true" label="tipoQuestao" maxlength="16"/></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="ordemQuestao" value="Ordem *" styleClass="form-label"/><h:inputText id="ordemQuestao" value="#{instrumentoAvaliativoCadastroBean.questao.ordem}" styleClass="form-control" required="true" label="Ordem"><f:validateLongRange minimum="1"/></h:inputText></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="peso" value="Peso (opcional)" styleClass="form-label"/><h:inputText id="peso" value="#{instrumentoAvaliativoCadastroBean.questao.peso}" styleClass="form-control" label="Peso"><f:convertNumber locale="pt_BR"/><f:validateDoubleRange minimum="0" maximum="9999.99"/></h:inputText></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="conjunto" value="Conjunto de opções (opcional)" styleClass="form-label"/><h:selectOneMenu id="conjunto" value="#{instrumentoAvaliativoCadastroBean.conjuntoId}" styleClass="form-select" required="false" label="conjunto"><f:selectItem itemLabel="Sem conjunto" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.conjuntos}" var="opcao" itemLabel="#{opcao.nome}" itemValue="#{opcao.id}"/></h:selectOneMenu></div>
+        <div class="col-12 col-md-6 cadastro-checks"><h:selectBooleanCheckbox id="obrigatoria" value="#{instrumentoAvaliativoCadastroBean.questao.obrigatoria}" styleClass="form-check-input"/><h:outputLabel for="obrigatoria" value="Resposta obrigatória"/></div>
+       </div>
+       <div class="cadastro-actions"><p:commandButton id="salvarQuestao" value="Salvar questão" action="#{instrumentoAvaliativoCadastroBean.salvarQuestao}" process="@form" update="@form" resetValues="true"/><p:commandButton id="novaQuestao" value="Nova questão" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true"/></div>
+      </ui:fragment>
+     </h:panelGroup>
+     <p:dataTable id="questoes" value="#{instrumentoAvaliativoCadastroBean.questoes}" var="q" emptyMessage="Selecione uma sessão e cadastre suas questões.">
+      <p:column headerText="Ordem"><h:outputText value="#{q.ordem}"/></p:column><p:column headerText="Enunciado"><h:outputText value="#{q.questao.enunciado}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{q.questao.tipo}"/></p:column><p:column headerText="Obrigatória"><h:outputText value="#{q.obrigatoria ? 'Sim' : 'Não'}"/></p:column>
+      <p:column headerText="Ações"><p:commandButton value="Editar questão" action="#{instrumentoAvaliativoCadastroBean.editarQuestao(q)}" process="@this" update="@form" resetValues="true"/></p:column>
+     </p:dataTable>
+    </h:form>
+   </p:tab>
+  </p:tabView>
+ </ui:define>
+</ui:composition>

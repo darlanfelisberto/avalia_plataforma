@@ -1,0 +1,14 @@
+.cadastro-heading { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:24px; align-items:center; }
+.cadastro-heading h1 { font-size:24px; font-weight:650; color:#274a3b; }
+.cadastro-heading p, .cadastro-help { color:#718378; font-size:13px; }
+.cadastro-form { padding:24px; }
+.cadastro-form h2 { font-size:18px; color:#274a3b; margin-bottom:20px; }
+.cadastro-form .form-label { font-size:13px; font-weight:600; color:#4b6556; }
+.cadastro-form .form-control, .cadastro-form .form-select { font-size:14px; }
+.cadastro-actions { display:flex; gap:12px; flex-wrap:wrap; margin:24px 0; }
+.cadastro-checks { display:flex; gap:18px; align-items:center; flex-wrap:wrap; font-size:13px; }
+.cadastro-checks label { margin-left:8px; }
+.cadastro-auditoria { margin-top:24px; font-size:12px; color:#718378; overflow-wrap:anywhere; }
+.cadastro-auditoria dt { font-weight:600; }
+.cadastro-divider { border-top:1px solid #dce7df; margin-top:20px; }
+@media(max-width:767.98px) { .cadastro-form { padding:14px; } .cadastro-heading h1 { font-size:21px; } }

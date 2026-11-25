@@ -1,4 +1,10 @@
 /* Seletores dos componentes PrimeFaces, isolados do tema Bootstrap da aplicação. */
+body .ui-tabs.instrument-tabs { background:white; border:1px solid #dce7df; border-radius:12px; }
+body .ui-tabs .ui-tabs-nav { background:#f7faf8; }
+body .ui-tabs .ui-tabs-nav li.ui-tabs-header.ui-state-active a { color:#276b50; }
+body .ui-tabs.instrument-tabs .ui-button { background:#276b50; border-color:#276b50; border-radius:7px; font-size:12px; }
+body .ui-tabs.instrument-tabs .ui-button.ui-state-hover { background:#205a43; border-color:#205a43; }
+body .ui-tabs.instrument-tabs .ui-button.ui-state-focus { box-shadow:0 0 0 3px #d6e9dc; }
 body .ui-widget { font-family: var(--bs-body-font-family); font-size: 12px; }
 body .ui-button.instrument-refresh { background: white; border: 1px solid #cadbd0; color: #446757; border-radius: 8px; font-size: 12px; box-shadow: none; }
 body .ui-button.instrument-refresh.ui-state-hover { background: #e8f1eb; border-color: #a9c6b4; color: #244e3f; }

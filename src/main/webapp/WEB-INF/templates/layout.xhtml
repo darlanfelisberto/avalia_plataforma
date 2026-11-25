@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets" xmlns:t="avalia.tags">
+    <ui:insert name="metadata"/>
     <h:head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -25,16 +26,6 @@
                         </div>
                     </ui:fragment>
                     <h:messages id="mensagensGlobais" globalOnly="true" redisplay="false" styleClass="app-messages"/>
-                    <ui:insert name="cabecalhoPagina">
-                        <div class="page-heading">
-                            <div>
-                                <span class="eyebrow">AVALIA PLATAFORMA</span>
-                                <h1>#{empty tituloPagina ? 'Visão geral' : tituloPagina}</h1>
-                                <ui:fragment rendered="#{not empty descricaoPagina}"><p>#{descricaoPagina}</p></ui:fragment>
-                            </div>
-                            <div class="page-actions"><ui:insert name="acoesPagina"/></div>
-                        </div>
-                    </ui:insert>
                     <ui:insert name="conteudo"/>
                 </main>
                 <footer class="app-footer">
