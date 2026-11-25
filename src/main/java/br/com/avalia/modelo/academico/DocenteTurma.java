@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.academico;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.DynamicInsert;
@@ -17,7 +17,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Entity
 @Table(name = "docente_turma", schema = "academico")
 @DynamicInsert
-public class DocenteTurma implements Serializable {
+public class DocenteTurma extends Model<Integer> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -46,6 +46,7 @@ public class DocenteTurma implements Serializable {
     public DocenteTurma() {
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

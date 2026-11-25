@@ -1,18 +1,18 @@
 package br.com.avalia.modelo.academico;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Table(name = "curso", schema = "academico")
 @DynamicInsert
-public class Curso implements Serializable {
+public class Curso extends Model<Integer> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -45,6 +45,7 @@ public class Curso implements Serializable {
     public Curso() {
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

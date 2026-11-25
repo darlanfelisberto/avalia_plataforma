@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.avaliacao;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.UUID;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -17,7 +17,7 @@ import org.hibernate.annotations.DynamicInsert;
         @UniqueConstraint(name = "tipo_entidade_codigo_key", columnNames = {"codigo"})
     })
 @DynamicInsert
-public class TipoEntidade implements Serializable {
+public class TipoEntidade extends Model<UUID> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -40,6 +40,11 @@ public class TipoEntidade implements Serializable {
     private Boolean podeResponder;
 
     public TipoEntidade() {
+    }
+
+    @Override
+    public UUID getId() {
+        return tipoEntidadeId;
     }
 
     public UUID getTipoEntidadeId() {

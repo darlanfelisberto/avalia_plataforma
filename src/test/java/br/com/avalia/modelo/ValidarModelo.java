@@ -17,6 +17,7 @@ public final class ValidarModelo {
     }
 
     public static void main(String[] args) throws Exception {
+        VerificarIdentidadeModel.validarTiposDistintos();
         var registryBuilder = new StandardServiceRegistryBuilder()
                 .applySetting("hibernate.connection.driver_class", "org.postgresql.Driver")
                 .applySetting("hibernate.connection.url", "jdbc:postgresql://"
@@ -77,9 +78,10 @@ public final class ValidarModelo {
                     for (var entity : factory.getMetamodel().getEntities().stream()
                             .sorted(java.util.Comparator.comparing(jakarta.persistence.metamodel.EntityType::getName))
                             .toList()) {
+                        VerificarIdentidadeModel.validar(entity.getJavaType(), session);
                         session.createQuery("from " + entity.getName(), entity.getJavaType())
                                 .setMaxResults(1).getResultList();
-                        System.out.println("Mapeamento e leitura OK: " + entity.getName());
+                        System.out.println("Identidade, proxy, mapeamento e leitura OK: " + entity.getName());
                     }
                 } finally {
                     transaction.rollback();

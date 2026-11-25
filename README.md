@@ -126,3 +126,19 @@ registros e encerra a transação com rollback. A chave composta também é veri
 As variáveis `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD` são aceitas.
 O Yasson tem escopo `test` para executar essa verificação fora do servidor; no
 Liberty, JSON-B continua sendo fornecido pela feature `jsonb-3.0`.
+
+### Identidade das entidades
+
+As 29 entidades estendem `Model<ID>` e implementam `getId()` com o tipo da chave
+correspondente (`Integer`, `UUID` ou `UnidadeClosureId`). Os getters originais,
+como `getIdPessoa()` e `getQuestaoId()`, continuam disponíveis.
+`equals()` e `hashCode()` são centralizados em `Model` e consideram o tipo da
+entidade e seu identificador. Instâncias distintas sem ID não são iguais.
+Proxies Hibernate usam o identificador já disponível sem carregar registros,
+inclusive fora da sessão. `UnidadeClosureId` continua como objeto de valor da
+chave composta, com sua própria igualdade baseada nos dois componentes.
+
+Como o hash depende do ID, atribua ou gere o identificador antes de usar a
+entidade como chave de `HashMap` ou elemento de `HashSet`, e não altere essa chave
+enquanto ela estiver na coleção. A validação de integração também verifica os
+contratos de identidade e a comparação com proxies detached das 29 entidades.

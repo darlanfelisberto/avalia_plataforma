@@ -1,15 +1,15 @@
 package br.com.avalia.modelo.academico;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "unidade_closure", schema = "academico")
-public class UnidadeClosure implements Serializable {
+public class UnidadeClosure extends Model<UnidadeClosureId> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -23,6 +23,7 @@ public class UnidadeClosure implements Serializable {
     public UnidadeClosure() {
     }
 
+    @Override
     public UnidadeClosureId getId() {
         return id;
     }

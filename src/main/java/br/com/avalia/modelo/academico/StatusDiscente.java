@@ -1,15 +1,15 @@
 package br.com.avalia.modelo.academico;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "status_discente", schema = "academico")
-public class StatusDiscente implements Serializable {
+public class StatusDiscente extends Model<Integer> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,6 +24,7 @@ public class StatusDiscente implements Serializable {
     public StatusDiscente() {
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

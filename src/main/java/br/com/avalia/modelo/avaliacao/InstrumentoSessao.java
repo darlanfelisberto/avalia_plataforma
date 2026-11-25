@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.avaliacao;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,12 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "instrumento_sessao", schema = "avaliacao")
-public class InstrumentoSessao implements Serializable {
+public class InstrumentoSessao extends Model<UUID> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -46,6 +46,11 @@ public class InstrumentoSessao implements Serializable {
     private String tiposessao;
 
     public InstrumentoSessao() {
+    }
+
+    @Override
+    public UUID getId() {
+        return instrumentoSessaoId;
     }
 
     public UUID getInstrumentoSessaoId() {

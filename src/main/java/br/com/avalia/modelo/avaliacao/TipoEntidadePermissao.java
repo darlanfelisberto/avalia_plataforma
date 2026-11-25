@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.avaliacao;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +20,7 @@ import java.util.UUID;
         @UniqueConstraint(name = "tipo_entidade_permissao_tipo_respondente_id_tipo_avaliado_i_key", columnNames = {"tipo_respondente_id", "tipo_avaliado_id"}),
         @UniqueConstraint(name = "uk767lkpbbhylhpbyg3ewlm4wep", columnNames = {"tipo_respondente_id", "tipo_avaliado_id"})
     })
-public class TipoEntidadePermissao implements Serializable {
+public class TipoEntidadePermissao extends Model<UUID> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -39,6 +39,11 @@ public class TipoEntidadePermissao implements Serializable {
     private TipoEntidade tipoAvaliado;
 
     public TipoEntidadePermissao() {
+    }
+
+    @Override
+    public UUID getId() {
+        return tipoEntidadePermissaoId;
     }
 
     public UUID getTipoEntidadePermissaoId() {

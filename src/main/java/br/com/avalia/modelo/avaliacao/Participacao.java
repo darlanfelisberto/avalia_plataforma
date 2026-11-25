@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.avaliacao;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serial;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.TimeZoneStorage;
@@ -19,7 +19,7 @@ import org.hibernate.annotations.TimeZoneStorageType;
 
 @Entity
 @Table(name = "participacao", schema = "avaliacao")
-public class Participacao implements Serializable {
+public class Participacao extends Model<UUID> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,6 +42,11 @@ public class Participacao implements Serializable {
     private RespostaInstrumento respostaInstrumento;
 
     public Participacao() {
+    }
+
+    @Override
+    public UUID getId() {
+        return participacaoId;
     }
 
     public UUID getParticipacaoId() {

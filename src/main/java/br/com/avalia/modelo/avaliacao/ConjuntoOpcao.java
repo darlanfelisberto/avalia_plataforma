@@ -1,5 +1,6 @@
 package br.com.avalia.modelo.avaliacao;
 
+import br.com.avalia.modelo.Model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,14 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
 @Table(name = "conjunto_opcao", schema = "avaliacao", uniqueConstraints = {
         @UniqueConstraint(name = "conjunto_opcao_nome_key", columnNames = {"nome"})
     })
-public class ConjuntoOpcao implements Serializable {
+public class ConjuntoOpcao extends Model<UUID> {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -32,6 +32,11 @@ public class ConjuntoOpcao implements Serializable {
     private Boolean exclusivo;
 
     public ConjuntoOpcao() {
+    }
+
+    @Override
+    public UUID getId() {
+        return conjuntoOpcaoId;
     }
 
     public UUID getConjuntoOpcaoId() {
