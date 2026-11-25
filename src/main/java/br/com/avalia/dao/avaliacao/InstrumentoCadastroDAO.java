@@ -164,6 +164,17 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
         entityManager.flush(); return destino;
     }
 
+    @Transactional
+    public void removerQuestaoDaSessao(UUID instrumentoId, UUID sessaoId, UUID vinculoId) {
+        sessaoDoInstrumento(instrumentoId, sessaoId);
+        if (vinculoId==null) throw new IllegalArgumentException("Questão não encontrada na sessão.");
+        var vinculo = entityManager.find(SessaoQuestao.class, vinculoId);
+        if (vinculo==null || !vinculo.getInstrumentoSessao().getId().equals(sessaoId))
+            throw new IllegalArgumentException("Questão não pertence à sessão selecionada.");
+        entityManager.remove(vinculo);
+        entityManager.flush();
+    }
+
     private InstrumentoAvaliativo instrumentoSalvo(UUID id) {
         if (id==null) throw new IllegalArgumentException("Salve o instrumento antes de cadastrar sessões ou questões.");
         var instrumento = entityManager.find(InstrumentoAvaliativo.class, id);

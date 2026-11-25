@@ -80,6 +80,11 @@ public final class ValidarCadastroInstrumento {
                     var c = new OpcaoQuestao(); c.setTexto("Indiferente"); c.setOrdem(3);
                     dao.gravarQuestao(id, sessaoId, editar, null, java.util.List.of(existentes.getFirst(),c)); session.clear();
                     check(dao.opcoes(questaoId).size()==2 && dao.opcoes(questaoId).getFirst().getTexto().equals("Concordo"), "Edição e remoção de alternativas");
+                    invalido(() -> dao.removerQuestaoDaSessao(outra.getId(), sessaoId, vinculoId));
+                    dao.removerQuestaoDaSessao(id, sessaoId, vinculoId); session.clear();
+                    check(dao.questoes(id, sessaoId).isEmpty(), "Remoção deve retirar o vínculo da sessão");
+                    check(session.find(Questao.class, questaoId)!=null && dao.opcoes(questaoId).size()==2,
+                            "Remoção da sessão deve preservar a questão e suas opções");
                     var periodoInvalido = novo(dados.getTipoEntidadeAvaliadaId()); periodoInvalido.setFimAplicacao(periodoInvalido.getInicioAplicacao());
                     invalido(() -> dao.gravar(periodoInvalido, "RASCUNHO", null));
                     invalido(() -> dao.gravar(novo(dados.getTipoEntidadeAvaliadaId()), "INEXISTENTE", null));

@@ -55,10 +55,16 @@
             <h:outputText styleClass="instrumento-questao-meta" value="#{q.questao.conjuntoOpcao.nome}" rendered="#{not empty q.questao.conjuntoOpcao}"/>
            </div>
           </div>
-          <p:commandButton icon="pi pi-pencil" title="Editar questão" pt:aria-label="Editar questão"
+          <p:commandLink title="Editar questão" pt:aria-label="Editar questão" styleClass="link-secondary align-self-start p-2"
                            action="#{instrumentoAvaliativoCadastroBean.editarQuestaoDaSessao(s, q)}"
                            process="@this" update=":questoesDialogForm" resetValues="true"
-                           oncomplete="PF('questoesDialog').show()"/>
+                           oncomplete="PF('questoesDialog').show()"><span class="pi pi-pencil" aria-hidden="true"/></p:commandLink>
+          <p:commandLink title="Remover questão da sessão" pt:aria-label="Remover questão da sessão" styleClass="link-danger align-self-start p-2"
+                         action="#{instrumentoAvaliativoCadastroBean.removerQuestaoDaSessao(s, q)}"
+                         process="@this" update=":abas:sessoesForm">
+           <span class="pi pi-trash" aria-hidden="true"/>
+           <p:confirm type="popup" message="Deseja remover esta questão da sessão?" icon="pi pi-exclamation-triangle"/>
+          </p:commandLink>
          </article>
         </ui:repeat>
        </div>
@@ -123,5 +129,9 @@
 
     </h:form>
   </p:dialog>
+  <p:confirmPopup global="true">
+   <p:commandButton value="Cancelar" type="button" styleClass="ui-confirm-popup-no" icon="pi pi-times"/>
+   <p:commandButton value="Remover" type="button" styleClass="ui-confirm-popup-yes ui-button-danger" icon="pi pi-trash"/>
+  </p:confirmPopup>
 </ui:define>
 </ui:composition>

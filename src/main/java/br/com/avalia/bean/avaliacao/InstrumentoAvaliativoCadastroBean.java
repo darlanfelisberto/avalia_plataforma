@@ -158,6 +158,15 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         editarQuestao(item);
     }
 
+    public void removerQuestaoDaSessao(InstrumentoSessao sessao, SessaoQuestao item) {
+        executar(() -> {
+            dao.removerQuestaoDaSessao(instrumentoSalvoId, sessao.getId(), item.getId());
+            carregarEstrutura();
+            if (sessao.getId().equals(sessaoSelecionadaId)) selecionarSessao();
+            mensagem(FacesMessage.SEVERITY_INFO, "Questão removida da sessão.");
+        });
+    }
+
     public void salvarQuestao() {
         executar(() -> {
             dao.gravarQuestao(instrumentoSalvoId, sessaoSelecionadaId, questao,
