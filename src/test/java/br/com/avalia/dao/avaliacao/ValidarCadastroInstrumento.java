@@ -64,6 +64,22 @@ public final class ValidarCadastroInstrumento {
                     editar.setOrdem(2); editar.setObrigatoria(false);
                     dao.gravarQuestao(id, sessaoId, editar, null); session.clear();
                     check(dao.questoes(id, sessaoId).getFirst().getQuestao().getEnunciado().equals("Questão editada"), "Edição da questão");
+                    editar.getQuestao().setTipo("UNICA_ESCOLHA");
+                    var a = new OpcaoQuestao(); a.setTexto("Sim"); a.setOrdem(2); a.setCorreta(true); a.setValor(new BigDecimal("2.50"));
+                    var b = new OpcaoQuestao(); b.setTexto("Não"); b.setOrdem(1); b.setCorreta(false); b.setValor(new BigDecimal("-1.00"));
+                    invalido(() -> dao.gravarQuestao(id, sessaoId, editar, null, java.util.List.of(a)));
+                    var comOpcoes = dao.gravarQuestao(id, sessaoId, editar, null, java.util.List.of(a,b));
+                    UUID questaoId = comOpcoes.getQuestao().getId(); session.clear();
+                    check(dao.opcoes(questaoId).size()==2, "Opções devem ser gravadas com a questão");
+                    check(dao.opcoes(questaoId).getFirst().getTexto().equals("Não"), "Ordem informada deve ser preservada");
+                    var opcaoCorreta = dao.opcoes(questaoId).get(1);
+                    check(opcaoCorreta.getCorreta() && opcaoCorreta.getValor().compareTo(new BigDecimal("2.50"))==0
+                            && opcaoCorreta.getQuestao().getId().equals(questaoId), "Correta, valor e relacionamento direto devem ser persistidos");
+                    var existentes = dao.opcoes(questaoId);
+                    existentes.getFirst().setTexto("Concordo");
+                    var c = new OpcaoQuestao(); c.setTexto("Indiferente"); c.setOrdem(3);
+                    dao.gravarQuestao(id, sessaoId, editar, null, java.util.List.of(existentes.getFirst(),c)); session.clear();
+                    check(dao.opcoes(questaoId).size()==2 && dao.opcoes(questaoId).getFirst().getTexto().equals("Concordo"), "Edição e remoção de alternativas");
                     var periodoInvalido = novo(dados.getTipoEntidadeAvaliadaId()); periodoInvalido.setFimAplicacao(periodoInvalido.getInicioAplicacao());
                     invalido(() -> dao.gravar(periodoInvalido, "RASCUNHO", null));
                     invalido(() -> dao.gravar(novo(dados.getTipoEntidadeAvaliadaId()), "INEXISTENTE", null));

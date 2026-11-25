@@ -52,6 +52,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     private String tituloSessaoSelecionada;
     private SessaoQuestao questao;
     private UUID conjuntoId;
+    private List<OpcaoQuestao> opcoesQuestao;
 
     @PostConstruct
     public void inicializar() {
@@ -138,11 +139,13 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     }
 
     public void novaQuestao() {
+        opcoesQuestao = new ArrayList<>();
         questao = new SessaoQuestao(); questao.setQuestao(new Questao());
         questao.setObrigatoria(true); questao.setOrdem(questoes.size()+1); conjuntoId = null;
     }
 
     public void editarQuestao(SessaoQuestao item) {
+        opcoesQuestao = new ArrayList<>(dao.opcoes(item.getQuestao().getId()));
         questao = new SessaoQuestao(); questao.setSessaoQuestaoId(item.getId());
         questao.setOrdem(item.getOrdem()); questao.setObrigatoria(item.getObrigatoria()); questao.setPeso(item.getPeso());
         var q = new Questao(); q.setEnunciado(item.getQuestao().getEnunciado()); q.setAssunto(item.getQuestao().getAssunto());
@@ -150,10 +153,15 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         conjuntoId = item.getQuestao().getConjuntoOpcao()==null ? null : item.getQuestao().getConjuntoOpcao().getId();
     }
 
+    public void editarQuestaoDaSessao(InstrumentoSessao sessao, SessaoQuestao item) {
+        abrirQuestoes(sessao);
+        editarQuestao(item);
+    }
+
     public void salvarQuestao() {
         executar(() -> {
             dao.gravarQuestao(instrumentoSalvoId, sessaoSelecionadaId, questao,
-                    TipoQuestaoId.ESCALAS.name().equals(questao.getQuestao().getTipo()) ? conjuntoId : null);
+                    TipoQuestaoId.ESCALAS.name().equals(questao.getQuestao().getTipo()) ? conjuntoId : null, opcoesQuestao);
             carregarEstrutura();
             org.primefaces.PrimeFaces.current().ajax().update("abas:sessoesForm");
             selecionarSessao(); mensagem(FacesMessage.SEVERITY_INFO, "Questão salva na sessão.");
@@ -161,10 +169,24 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     }
 
     public void alterarTipoQuestao() {
+        if (isQuestaoEscolha() && opcoesQuestao.isEmpty()) { adicionarOpcao(); adicionarOpcao(); }
         if (!TipoQuestaoId.ESCALAS.name().equals(questao.getQuestao().getTipo())) {
             conjuntoId = null;
         }
     }
+
+    public boolean isQuestaoEscolha() {
+        return "UNICA_ESCOLHA".equals(questao.getQuestao().getTipo()) || "MULTIPLA_ESCOLHA".equals(questao.getQuestao().getTipo());
+    }
+    public void adicionarOpcao() {
+        var opcao = new OpcaoQuestao();
+        opcao.setCorreta(false);
+        opcao.setOrdem(opcoesQuestao.stream().map(OpcaoQuestao::getOrdem)
+                .filter(java.util.Objects::nonNull).max(Integer::compareTo).orElse(0) + 1);
+        opcoesQuestao.add(opcao);
+    }
+    public void removerOpcao(OpcaoQuestao opcao) { opcoesQuestao.remove(opcao); }
+    public List<OpcaoQuestao> getOpcoesQuestao() { return opcoesQuestao; }
 
     private void executar(Runnable acao) {
         try { acao.run(); }

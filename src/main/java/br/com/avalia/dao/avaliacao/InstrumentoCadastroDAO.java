@@ -89,6 +89,16 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
 
     @Transactional
     public SessaoQuestao gravarQuestao(UUID instrumentoId, UUID sessaoId, SessaoQuestao dados, UUID conjuntoId) {
+        return gravarQuestao(instrumentoId, sessaoId, dados, conjuntoId, List.of());
+    }
+
+    public List<OpcaoQuestao> opcoes(UUID questaoId) {
+        return entityManager.createQuery("from OpcaoQuestao where questao.questaoId=:id order by ordem, opcaoQuestaoId", OpcaoQuestao.class)
+                .setParameter("id", questaoId).getResultList();
+    }
+
+    @Transactional
+    public SessaoQuestao gravarQuestao(UUID instrumentoId, UUID sessaoId, SessaoQuestao dados, UUID conjuntoId, List<OpcaoQuestao> alternativas) {
         var instrumento = instrumentoSalvo(instrumentoId);
         var sessao = sessaoDoInstrumento(instrumentoId, sessaoId);
         exigirTexto(dados.getQuestao().getEnunciado(), Integer.MAX_VALUE, "Enunciado");
@@ -98,6 +108,19 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
         catch (IllegalArgumentException e) { throw new IllegalArgumentException("Selecione um tipo de questão válido."); }
         if (entityManager.find(TipoQuestao.class, tipoId)==null)
             throw new IllegalArgumentException("Tipo de questão não cadastrado.");
+        boolean escolha = tipoId==TipoQuestaoId.UNICA_ESCOLHA || tipoId==TipoQuestaoId.MULTIPLA_ESCOLHA;
+        if (escolha) {
+            if (alternativas.size()<2) throw new IllegalArgumentException("Cadastre pelo menos duas opções para a questão.");
+            var ordens = new java.util.HashSet<Integer>();
+            for (var alternativa : alternativas) {
+                exigirTexto(alternativa.getTexto(), 300, "Texto da opção");
+                if (alternativa.getOrdem()==null || alternativa.getOrdem()<1 || !ordens.add(alternativa.getOrdem()))
+                    throw new IllegalArgumentException("Informe uma ordem positiva e diferente para cada opção.");
+                var valor = alternativa.getValor();
+                if (valor!=null && (valor.scale()>2 || valor.precision()-valor.scale()>4))
+                    throw new IllegalArgumentException("O valor da opção deve estar entre -9999,99 e 9999,99, com até duas casas decimais.");
+            }
+        }
         if (dados.getOrdem()==null || dados.getOrdem()<1) throw new IllegalArgumentException("A ordem deve ser maior que zero.");
         if (dados.getPeso()!=null && (dados.getPeso().signum()<0 || dados.getPeso().scale()>2 || dados.getPeso().precision()-dados.getPeso().scale()>4))
             throw new IllegalArgumentException("O peso deve estar entre 0 e 9999,99, com até duas casas decimais.");
@@ -113,6 +136,28 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
         questao.setEnunciado(dados.getQuestao().getEnunciado().strip()); questao.setAssunto(dados.getQuestao().getAssunto());
         questao.setTipo(dados.getQuestao().getTipo().strip()); questao.setConjuntoOpcao(conjunto);
         if (questao.getId()==null) { questao.setCriadoEm(OffsetDateTime.now()); questao.setCriadoPor(instrumento.getCriadoPor()); entityManager.persist(questao); }
+        if (escolha) {
+            String nomeConjunto = "Questão " + questao.getId();
+            var proprio = entityManager.createQuery("from ConjuntoOpcao where nome=:nome", ConjuntoOpcao.class)
+                    .setParameter("nome", nomeConjunto).getResultStream().findFirst().orElse(null);
+            if (proprio==null) { proprio=new ConjuntoOpcao(); proprio.setNome(nomeConjunto); entityManager.persist(proprio); }
+            proprio.setExclusivo(tipoId==TipoQuestaoId.UNICA_ESCOLHA);
+            questao.setConjuntoOpcao(proprio);
+            var anteriores = opcoes(questao.getId());
+            var mantidas = new java.util.HashSet<UUID>();
+            for (var alternativa : alternativas) {
+                var destinoOpcao = alternativa.getId()==null ? new OpcaoQuestao() : anteriores.stream()
+                        .filter(o -> o.getId().equals(alternativa.getId())).findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Opção não pertence à questão."));
+                destinoOpcao.setQuestao(questao); destinoOpcao.setConjuntoOpcao(proprio);
+                destinoOpcao.setOrdem(alternativa.getOrdem()); destinoOpcao.setTexto(alternativa.getTexto().strip());
+                destinoOpcao.setCorreta(Boolean.TRUE.equals(alternativa.getCorreta()));
+                destinoOpcao.setValor(alternativa.getValor());
+                if (destinoOpcao.getId()==null) entityManager.persist(destinoOpcao);
+                mantidas.add(destinoOpcao.getId());
+            }
+            anteriores.stream().filter(o -> !mantidas.contains(o.getId())).forEach(entityManager::remove);
+        }
         destino.setInstrumentoSessao(sessao); destino.setOrdem(dados.getOrdem()); destino.setPeso(dados.getPeso());
         destino.setObrigatoria(Boolean.TRUE.equals(dados.getObrigatoria()));
         if (destino.getId()==null) entityManager.persist(destino);

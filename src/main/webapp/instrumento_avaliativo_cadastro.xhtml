@@ -37,7 +37,7 @@
         <div><span class="instrumento-sessao-ordem">Sessão <h:outputText value="#{s.ordem}"/></span><h3><h:outputText value="#{s.titulo}"/></h3><h:outputText value="#{s.descricao}" styleClass="instrumento-sessao-descricao" rendered="#{not empty s.descricao}"/></div>
         <div class="instrumento-sessao-acoes">
          <p:commandButton icon="pi pi-pencil" title="Editar sessão" pt:aria-label="Editar sessão" action="#{instrumentoAvaliativoCadastroBean.editarSessao(s)}" process="@this" update=":sessaoDialogForm" resetValues="true" oncomplete="PF('sessaoDialog').show()"/>
-         <p:commandButton value="Questões" icon="pi pi-list" title="Cadastrar ou editar questões desta sessão" action="#{instrumentoAvaliativoCadastroBean.abrirQuestoes(s)}" process="@this" update=":questoesDialogForm" resetValues="true" oncomplete="PF('questoesDialog').show()"/>
+         <p:commandButton value="Adicionar questões" icon="pi pi-plus" title="Adicionar questões à sessão" action="#{instrumentoAvaliativoCadastroBean.abrirQuestoes(s)}" process="@this" update=":questoesDialogForm" resetValues="true" oncomplete="PF('questoesDialog').show()"/>
         </div>
        </header>
        <div class="instrumento-sessao-questoes">
@@ -45,7 +45,7 @@
         <ui:repeat id="questoesDaSessao" value="#{instrumentoAvaliativoCadastroBean.questoesPorSessao[s.id]}" var="q">
          <article class="instrumento-questao">
           <span class="instrumento-questao-numero"><h:outputText value="#{q.ordem}"/></span>
-          <div class="instrumento-questao-conteudo">
+          <div class="instrumento-questao-conteudo flex-grow-1">
            <h4><h:outputText value="#{q.questao.enunciado}"/></h4>
            <div class="instrumento-questao-detalhes">
             <span><h:outputText value="#{q.questao.tipo}"/></span>
@@ -55,6 +55,10 @@
             <h:outputText styleClass="instrumento-questao-meta" value="#{q.questao.conjuntoOpcao.nome}" rendered="#{not empty q.questao.conjuntoOpcao}"/>
            </div>
           </div>
+          <p:commandButton icon="pi pi-pencil" title="Editar questão" pt:aria-label="Editar questão"
+                           action="#{instrumentoAvaliativoCadastroBean.editarQuestaoDaSessao(s, q)}"
+                           process="@this" update=":questoesDialogForm" resetValues="true"
+                           oncomplete="PF('questoesDialog').show()"/>
          </article>
         </ui:repeat>
        </div>
@@ -80,32 +84,43 @@
     </div>
    </h:form>
   </p:dialog>
-  <p:dialog id="questoesDialog" widgetVar="questoesDialog" header="Questões da sessão" modal="true" appendTo="@(body)" responsive="true" fitViewport="true" width="900" styleClass="sessao-dialog">
+  <p:dialog id="questoesDialog" widgetVar="questoesDialog" showHeader="false"  modal="true" appendTo="@(body)" responsive="true" fitViewport="true" width="900" styleClass="sessao-dialog">
+
     <h:form id="questoesDialogForm" styleClass="cadastro-form">
-     <h2>Questões da sessão</h2>
-     <p class="cadastro-help">Sessão: <h:outputText value="#{instrumentoAvaliativoCadastroBean.tituloSessaoSelecionada}"/></p>
-<h3>Questões cadastradas (<h:outputText value="#{instrumentoAvaliativoCadastroBean.questoes.size()}"/>)</h3>
-     <p:dataTable id="questoes" value="#{instrumentoAvaliativoCadastroBean.questoes}" var="q" emptyMessage="Nenhuma questão cadastrada nesta sessão.">
-      <p:column headerText="Ordem"><h:outputText value="#{q.ordem}"/></p:column><p:column headerText="Enunciado"><h:outputText value="#{q.questao.enunciado}"/></p:column><p:column headerText="Tipo"><h:outputText value="#{q.questao.tipo}"/></p:column><p:column headerText="Obrigatória"><h:outputText value="#{q.obrigatoria ? 'Sim' : 'Não'}"/></p:column>
-      <p:column headerText="Ações"><p:commandButton value="Editar questão" action="#{instrumentoAvaliativoCadastroBean.editarQuestao(q)}" process="@this" update="@form" resetValues="true"/></p:column>
-     </p:dataTable>
+      Questões da sessão: #{instrumentoAvaliativoCadastroBean.tituloSessaoSelecionada}
 <h3 class="mt-4">Cadastro da questão</h3>
      <h:panelGroup id="editorQuestao" layout="block">
       <ui:fragment rendered="#{not empty instrumentoAvaliativoCadastroBean.sessaoSelecionadaId}">
        <div class="row g-3">
         <div class="col-12"><h:outputLabel for="enunciado" value="Enunciado *" styleClass="form-label"/><h:inputTextarea id="enunciado" value="#{instrumentoAvaliativoCadastroBean.questao.questao.enunciado}" styleClass="form-control" rows="3" required="true" label="enunciado"/></div>
         <div class="col-12 col-md-6"><h:outputLabel for="assunto" value="Assunto" styleClass="form-label"/><h:inputText id="assunto" value="#{instrumentoAvaliativoCadastroBean.questao.questao.assunto}" styleClass="form-control" required="false" label="assunto" maxlength="100"/></div>
-        <div class="col-12 col-md-6"><h:outputLabel for="tipoQuestao" value="Tipo da questão *" styleClass="form-label"/><h:selectOneMenu id="tipoQuestao" value="#{instrumentoAvaliativoCadastroBean.questao.questao.tipo}" styleClass="form-select" required="true" label="Tipo da questão"><f:selectItem itemLabel="Selecione o tipo" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.tiposQuestao}" var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo.id.name()}"/><p:ajax listener="#{instrumentoAvaliativoCadastroBean.alterarTipoQuestao}" process="@this" update="conjuntoOpcoes" resetValues="true"/></h:selectOneMenu></div>
+        <div class="col-12 col-md-6"><h:outputLabel for="tipoQuestao" value="Tipo da questão *" styleClass="form-label"/><h:selectOneMenu id="tipoQuestao" value="#{instrumentoAvaliativoCadastroBean.questao.questao.tipo}" styleClass="form-select" required="true" label="Tipo da questão"><f:selectItem itemLabel="Selecione o tipo" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.tiposQuestao}" var="tipo" itemLabel="#{tipo.descricao}" itemValue="#{tipo.id.name()}"/><p:ajax listener="#{instrumentoAvaliativoCadastroBean.alterarTipoQuestao}" process="@this" update="conjuntoOpcoes opcoesQuestao" resetValues="true"/></h:selectOneMenu></div>
         <div class="col-12 col-md-6"><h:outputLabel for="ordemQuestao" value="Ordem *" styleClass="form-label"/><h:inputText id="ordemQuestao" value="#{instrumentoAvaliativoCadastroBean.questao.ordem}" styleClass="form-control" required="true" label="Ordem"><f:validateLongRange minimum="1"/></h:inputText></div>
         <div class="col-12 col-md-6"><h:outputLabel for="peso" value="Peso (opcional)" styleClass="form-label"/><h:inputText id="peso" value="#{instrumentoAvaliativoCadastroBean.questao.peso}" styleClass="form-control" label="Peso"><f:convertNumber locale="pt_BR"/><f:validateDoubleRange minimum="0" maximum="9999.99"/></h:inputText></div>
         <h:panelGroup id="conjuntoOpcoes" layout="block" styleClass="col-12 col-md-6"><ui:fragment rendered="#{instrumentoAvaliativoCadastroBean.questao.questao.tipo eq 'ESCALAS'}"><h:outputLabel for="conjunto" value="Conjunto de opções (opcional)" styleClass="form-label"/><h:selectOneMenu id="conjunto" value="#{instrumentoAvaliativoCadastroBean.conjuntoId}" styleClass="form-select" required="false" label="conjunto"><f:selectItem itemLabel="Sem conjunto" itemValue="#{null}" noSelectionOption="true"/><f:selectItems value="#{instrumentoAvaliativoCadastroBean.conjuntos}" var="opcao" itemLabel="#{opcao.nome}" itemValue="#{opcao.id}"/></h:selectOneMenu></ui:fragment></h:panelGroup>
         <div class="col-12 col-md-6 cadastro-checks"><h:selectBooleanCheckbox id="obrigatoria" value="#{instrumentoAvaliativoCadastroBean.questao.obrigatoria}" styleClass="form-check-input"/><h:outputLabel for="obrigatoria" value="Resposta obrigatória"/></div>
        </div>
-       <div class="cadastro-actions"><p:commandButton id="salvarQuestao" value="Salvar questão" action="#{instrumentoAvaliativoCadastroBean.salvarQuestao}" process="@form" update="@form"/><p:commandButton id="novaQuestao" value="Nova questão" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true"/></div>
+       <h:panelGroup id="opcoesQuestao" layout="block">
+        <ui:fragment rendered="#{instrumentoAvaliativoCadastroBean.questaoEscolha}">
+         <h3 class="mt-4">Opções da questão</h3>
+         <p class="cadastro-help">Cadastre pelo menos duas alternativas. Elas serão gravadas ao salvar a questão.</p>
+         <ui:repeat id="alternativas" value="#{instrumentoAvaliativoCadastroBean.opcoesQuestao}" var="opcao" varStatus="pos">
+          <div class="row g-2 align-items-end mb-3">
+           <div class="col-12 col-md-5"><h:outputLabel for="textoOpcao" value="Opção #{pos.index + 1}" styleClass="form-label"/><h:inputText id="textoOpcao" value="#{opcao.texto}" maxlength="300" styleClass="form-control"/></div>
+           <div class="col-6 col-md-2"><h:outputLabel for="ordemOpcao" value="Ordem da opção #{pos.index + 1}" styleClass="form-label"/><h:inputText id="ordemOpcao" value="#{opcao.ordem}" styleClass="form-control"><f:validateLongRange minimum="1"/></h:inputText></div>
+           <div class="col-6 col-md-2"><h:outputLabel for="valorOpcao" value="Valor da opção #{pos.index + 1}" styleClass="form-label"/><h:inputText id="valorOpcao" value="#{opcao.valor}" styleClass="form-control"><f:convertNumber locale="pt_BR"/><f:validateDoubleRange minimum="-9999.99" maximum="9999.99"/></h:inputText></div>
+           <div class="col-auto pb-2"><h:selectBooleanCheckbox id="corretaOpcao" value="#{opcao.correta}" styleClass="form-check-input"/><h:outputLabel for="corretaOpcao" value="Correta #{pos.index + 1}" styleClass="form-check-label ms-2"/></div>
+           <div class="col-auto"><p:commandButton icon="pi pi-trash" title="Remover opção" pt:aria-label="Remover opção" action="#{instrumentoAvaliativoCadastroBean.removerOpcao(opcao)}" process="@this :questoesDialogForm:opcoesQuestao" update=":questoesDialogForm:opcoesQuestao"/></div>
+          </div>
+         </ui:repeat>
+         <p:commandButton value="Adicionar opção" icon="pi pi-plus" action="#{instrumentoAvaliativoCadastroBean.adicionarOpcao}" process="@this :questoesDialogForm:opcoesQuestao" update=":questoesDialogForm:opcoesQuestao"/>
+        </ui:fragment>
+       </h:panelGroup>
+       <div class="cadastro-actions"><p:commandButton id="salvarQuestao" value="Salvar questão" action="#{instrumentoAvaliativoCadastroBean.salvarQuestao}" process="@form" update="@form"/>
+        <p:commandButton value="Fechar" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true" oncomplete="PF('questoesDialog').hide()"/></div>
       </ui:fragment>
      </h:panelGroup>
 
-     <div class="cadastro-actions"><p:commandButton value="Fechar" action="#{instrumentoAvaliativoCadastroBean.novaQuestao}" process="@this" update="@form" resetValues="true" oncomplete="PF('questoesDialog').hide()"/></div>
     </h:form>
   </p:dialog>
 </ui:define>
