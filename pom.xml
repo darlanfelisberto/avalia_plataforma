@@ -17,9 +17,15 @@
         <hibernate.version>7.4.17.Final</hibernate.version>
         <postgresql.version>42.7.14</postgresql.version>
         <primefaces.version>16.0.2</primefaces.version>
+        <omnifaces.version>5.5.8</omnifaces.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>${omnifaces.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>

@@ -8,4 +8,7 @@
             <default-locale>pt_BR</default-locale>
         </locale-config>
     </application>
+    <factory>
+        <exception-handler-factory>org.omnifaces.exceptionhandler.ViewExpiredExceptionHandlerFactory</exception-handler-factory>
+    </factory>
 </faces-config>

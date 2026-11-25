@@ -11,20 +11,13 @@
     </ui:define>
 
     <ui:define name="acoesPagina">
-        <h:form id="acoesInstrumentoForm">
-            <p:commandButton id="atualizarLista" value="Atualizar lista"
-                             action="#{instrumentoAvalitivoBean.atualizarLista}"
-                             process="@this" update=":instrumentosForm @form"
-                             styleClass="instrument-refresh"/>
-            <p:messages id="mensagensAcoes" redisplay="false"/>
-        </h:form>
+
     </ui:define>
 
     <ui:define name="conteudo">
         <h:form id="filtrosInstrumentoForm" styleClass="instrument-filters">
             <div class="instrument-filters-heading">
                 <h2>Filtrar instrumentos</h2>
-                <span>Combine os campos para refinar a consulta.</span>
             </div>
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-5">
@@ -56,7 +49,6 @@
             <section class="instrument-list" aria-labelledby="tituloListaInstrumentos">
                 <div class="instrument-list-heading">
                     <div>
-                        <span class="eyebrow">AVALIAÇÕES</span>
                         <h2 id="tituloListaInstrumentos">Instrumentos cadastrados</h2>
                     </div>
                 </div>

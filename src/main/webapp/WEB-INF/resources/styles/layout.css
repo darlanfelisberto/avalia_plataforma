@@ -91,7 +91,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .app-messages:empty { display: none; }
 .app-messages { border-left: 3px solid var(--av-green); background: white; padding: 16px 32px; border-radius: 8px; margin-bottom: 20px; }
 .page-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 29px; }
-.eyebrow { display: block; font-size: 9px; font-weight: 650; letter-spacing: 1.7px; color: #7b8f94; }
 .page-heading h1 { margin: 8px 0 8px; font-size: 30px; font-weight: 650; letter-spacing: -1.15px; line-height: 1.2; }
 .page-heading p { font-size: 12px; line-height: 1.7; color: var(--av-muted); margin: 0; }
 .page-actions:empty { display: none; }
@@ -99,7 +98,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .welcome-banner { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 299px; padding: 35px 36px; border-radius: 14px; background: #e9f1ed; overflow: hidden; border: 1px solid #e1eae5; }
 .welcome-banner::after { content: ""; width: 360px; height: 360px; border: 1px solid #d9e6de; border-radius: 50%; position: absolute; right: -185px; top: -180px; pointer-events: none; }
 .welcome-copy { position: relative; z-index: 1; }
-.banner-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: 1.6px; font-weight: 650; color: #587d6a; }
 .banner-dash { width: 20px; height: 1px; background: #6eac8c; }
 .welcome-copy h2 { color: #244e3f; font-size: clamp(25px, 2.4vw, 37px); font-weight: 650; letter-spacing: -1.2px; line-height: 1.24; margin: 16px 0 13px; }
 .welcome-copy p { font-size: 11.5px; color: #688075; line-height: 1.95; margin: 0 0 23px; }
@@ -239,7 +237,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
     .app-content { padding: 23px 17px; }
     .welcome-banner { padding: 26px 23px; }
     .welcome-copy h2 { font-size: 27px; letter-spacing: -.9px; }
-    .banner-eyebrow { font-size: 7px; letter-spacing: 1.25px; }
     .banner-dash { width: 15px; }
     .welcome-copy p { font-size: 13px; }
     .section-caption { display: none; }

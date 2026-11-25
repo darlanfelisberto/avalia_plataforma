@@ -2,7 +2,7 @@
     <header class="app-topbar">
         <div class="topbar-location">
             <button type="button" class="menu-toggle d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral" aria-expanded="false" aria-label="Abrir menu principal"><t:icone nome="menu"/></button>
-            <div class="topbar-breadcrumb" aria-label="Localização atual"><span>Plataforma</span><t:icone nome="chevron-right"/><strong>#{empty tituloBarra ? 'Visão geral' : tituloBarra}</strong></div>
+            <div class="topbar-breadcrumb" aria-label="Localização atual"><span>Plataforma</span><ui:fragment rendered="#{not empty tituloBarra}"><t:icone nome="chevron-right"/><strong>#{tituloBarra}</strong></ui:fragment></div>
         </div>
         <div class="topbar-account">
             <ui:insert name="acoesTopo"/>

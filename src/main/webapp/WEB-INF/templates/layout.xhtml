@@ -19,6 +19,11 @@
             <div class="app-main">
                 <t:barraSuperior tituloBarra="#{tituloPagina}" usuarioNome="#{nomeUsuario}" usuarioPerfil="#{perfilUsuario}"/>
                 <main id="conteudoPrincipal" class="app-content" tabindex="-1">
+                    <ui:fragment rendered="#{flash['org.omnifaces.view_expired'] eq true}">
+                        <div class="alert alert-warning" role="alert">
+                            A página expirou e foi recarregada. Preencha novamente os campos que ainda não haviam sido enviados.
+                        </div>
+                    </ui:fragment>
                     <h:messages id="mensagensGlobais" globalOnly="true" redisplay="false" styleClass="app-messages"/>
                     <ui:insert name="cabecalhoPagina">
                         <div class="page-heading">

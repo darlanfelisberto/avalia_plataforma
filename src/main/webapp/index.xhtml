@@ -1,12 +1,9 @@
 <ui:composition template="/WEB-INF/templates/layout.xhtml" xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:t="avalia.tags">
-    <ui:param name="tituloPagina" value="Visão geral"/>
-    <ui:param name="descricaoPagina" value="Um olhar completo para construir os próximos passos."/>
     <ui:param name="menuAtivo" value="inicio"/>
     <ui:define name="acoesPagina"><span class="welcome-label"><span class="status-dot"/>Seu espaço de avaliação</span></ui:define>
     <ui:define name="conteudo">
         <section class="welcome-banner" aria-labelledby="tituloBoasVindas">
             <div class="welcome-copy">
-                <span class="banner-eyebrow"><span class="banner-dash"/>ESCUTAR. COMPREENDER. EVOLUIR.</span>
                 <h2 id="tituloBoasVindas">Cada perspectiva conta.<br/>Cada resposta transforma.</h2>
                 <p>Conecte pessoas, organize avaliações e transforme a escuta<br class="d-none d-xl-inline"/> em caminhos para uma instituição cada vez melhor.</p>
                 <h:link outcome="/instrumento_avaliativo" styleClass="btn btn-avalia">Explorar avaliações<t:icone nome="arrow-right"/></h:link>

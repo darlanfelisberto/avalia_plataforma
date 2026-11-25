@@ -10,8 +10,6 @@ O cabeçalho permanece visível durante a rolagem.
 ```xml
 <ui:composition template="/WEB-INF/templates/layout.xhtml"
                 xmlns:ui="jakarta.faces.facelets">
-    <ui:param name="tituloPagina" value="Minha página"/>
-    <ui:param name="descricaoPagina" value="Descrição breve do conteúdo."/>
     <ui:param name="menuAtivo" value="avaliacoes"/>
 
     <ui:define name="acoesPagina">
@@ -41,7 +39,7 @@ Blocos disponíveis para personalização:
 | Bloco | Uso |
 | --- | --- |
 | `conteudo` | Conteúdo principal |
-| `acoesPagina` | Ações ao lado do título |
+| `acoesPagina` | Ações no início do conteúdo, alinhadas à direita |
 | `cabecalhoPagina` | Substituição completa do cabeçalho da página |
 | `usuario` | Área completa de identificação do usuário |
 | `avatarUsuario` | Avatar ou iniciais |
