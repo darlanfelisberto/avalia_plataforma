@@ -93,6 +93,11 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
         var sessao = sessaoDoInstrumento(instrumentoId, sessaoId);
         exigirTexto(dados.getQuestao().getEnunciado(), Integer.MAX_VALUE, "Enunciado");
         exigirTexto(dados.getQuestao().getTipo(), 16, "Tipo da questão");
+        TipoQuestaoId tipoId;
+        try { tipoId = TipoQuestaoId.valueOf(dados.getQuestao().getTipo()); }
+        catch (IllegalArgumentException e) { throw new IllegalArgumentException("Selecione um tipo de questão válido."); }
+        if (entityManager.find(TipoQuestao.class, tipoId)==null)
+            throw new IllegalArgumentException("Tipo de questão não cadastrado.");
         if (dados.getOrdem()==null || dados.getOrdem()<1) throw new IllegalArgumentException("A ordem deve ser maior que zero.");
         if (dados.getPeso()!=null && (dados.getPeso().signum()<0 || dados.getPeso().scale()>2 || dados.getPeso().precision()-dados.getPeso().scale()>4))
             throw new IllegalArgumentException("O peso deve estar entre 0 e 9999,99, com até duas casas decimais.");

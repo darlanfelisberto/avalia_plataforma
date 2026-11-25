@@ -105,8 +105,11 @@ O bean só libera a segunda aba depois de o DAO retornar com a transação concl
 
 O fim deve ser posterior ao início; ordens devem ser positivas, e o peso aceita
 0 a 9999,99 com até duas casas decimais. Status e entidade são selecionados de
-registros existentes. O tipo da questão permanece textual (até 16 caracteres),
-como no modelo atual. Criação de conjuntos e alternativas não integra esta tela;
+registros existentes. O tipo da questão é escolhido em `h:selectOneMenu`, carregado
+por `TipoQuestaoDAO` (`@RequestScoped`, estende `DataTableDAO<TipoQuestao>`).
+O menu usa a descrição como rótulo e o nome do enum ID como valor. A coluna
+`questao.tipo` mantém o código textual; a gravação valida sua existência no banco.
+Criação de conjuntos e alternativas não integra esta tela;
 o menu permite selecionar os conjuntos já cadastrados.
 
 Ainda sem autenticação, o responsável é informado explicitamente, sem atribuir

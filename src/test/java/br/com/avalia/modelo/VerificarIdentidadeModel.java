@@ -65,6 +65,9 @@ final class VerificarIdentidadeModel {
     }
 
     private static Object identifier(Class<?> type, boolean different) {
+        if (type.isEnum()) {
+            return type.getEnumConstants()[different ? 1 : 0];
+        }
         if (type == Integer.class) {
             return different ? 43 : 42;
         }

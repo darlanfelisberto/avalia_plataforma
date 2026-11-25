@@ -2,6 +2,7 @@ package br.com.avalia.bean.avaliacao;
 
 import br.com.avalia.dao.avaliacao.InstrumentoCadastroDAO;
 import br.com.avalia.dao.avaliacao.StatusDAO;
+import br.com.avalia.dao.avaliacao.TipoQuestaoDAO;
 import br.com.avalia.modelo.avaliacao.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -30,6 +31,8 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     private static final Logger LOG = Logger.getLogger(InstrumentoAvaliativoCadastroBean.class.getName());
     @Inject private InstrumentoCadastroDAO dao;
     @Inject private StatusDAO statusDAO;
+    @Inject private TipoQuestaoDAO tipoQuestaoDAO;
+    private List<TipoQuestao> tiposQuestao;
     private UUID id;
     private UUID instrumentoSalvoId;
     private InstrumentoAvaliativo instrumento;
@@ -52,6 +55,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
 
     @PostConstruct
     public void inicializar() {
+        tiposQuestao = tipoQuestaoDAO.listarTodos();
         instrumento = new InstrumentoAvaliativo();
         instrumento.setAnonimo(true); instrumento.setPermiteEdicao(true);
         codigoStatus = "RASCUNHO";
@@ -148,11 +152,18 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
 
     public void salvarQuestao() {
         executar(() -> {
-            dao.gravarQuestao(instrumentoSalvoId, sessaoSelecionadaId, questao, conjuntoId);
+            dao.gravarQuestao(instrumentoSalvoId, sessaoSelecionadaId, questao,
+                    TipoQuestaoId.ESCALAS.name().equals(questao.getQuestao().getTipo()) ? conjuntoId : null);
             carregarEstrutura();
             org.primefaces.PrimeFaces.current().ajax().update("abas:sessoesForm");
             selecionarSessao(); mensagem(FacesMessage.SEVERITY_INFO, "Questão salva na sessão.");
         });
+    }
+
+    public void alterarTipoQuestao() {
+        if (!TipoQuestaoId.ESCALAS.name().equals(questao.getQuestao().getTipo())) {
+            conjuntoId = null;
+        }
     }
 
     private void executar(Runnable acao) {
@@ -183,6 +194,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
     public LocalDateTime getConsolidado() { return consolidado; }
     public void setConsolidado(LocalDateTime valor) { consolidado=valor; }
     public List<Status> getStatusDisponiveis() { return statusDisponiveis; }
+    public List<TipoQuestao> getTiposQuestao() { return tiposQuestao; }
     public List<TipoEntidade> getTipos() { return tipos; }
     public List<ConjuntoOpcao> getConjuntos() { return conjuntos; }
     public List<InstrumentoSessao> getSessoes() { return sessoes; }

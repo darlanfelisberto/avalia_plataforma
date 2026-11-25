@@ -46,7 +46,7 @@ public final class ValidarCadastroInstrumento {
                     var salva = dao.gravarSessao(id, sessao);
                     UUID sessaoId = salva.getId(); session.clear();
                     check(dao.sessoes(id).size()==1, "Sessão vinculada ao instrumento");
-                    var questao = new SessaoQuestao(); var q = new Questao(); q.setEnunciado("Como você avalia?"); q.setTipo("TEXTO");
+                    var questao = new SessaoQuestao(); var q = new Questao(); q.setEnunciado("Como você avalia?"); q.setTipo("DESCRITIVA");
                     questao.setQuestao(q); questao.setOrdem(1); questao.setObrigatoria(true); questao.setPeso(new BigDecimal("1.50"));
                     invalido(() -> dao.gravarQuestao(id, null, questao, null));
                     var outra = dao.gravar(novo(dados.getTipoEntidadeAvaliadaId()), "RASCUNHO", null);
@@ -60,7 +60,7 @@ public final class ValidarCadastroInstrumento {
                     check(dao.questoesDoInstrumento(outra.getId()).isEmpty(), "Visão completa deve isolar os instrumentos");
                     check(lista.size()==1 && lista.getFirst().getQuestao().getCriadoPor().equals("validacao_rollback"), "Questão e vínculo gravados atomicamente");
                     var editar = new SessaoQuestao(); editar.setSessaoQuestaoId(vinculoId); editar.setQuestao(new Questao());
-                    editar.getQuestao().setTipo("TEXTO"); editar.getQuestao().setEnunciado("Questão editada");
+                    editar.getQuestao().setTipo("DESCRITIVA"); editar.getQuestao().setEnunciado("Questão editada");
                     editar.setOrdem(2); editar.setObrigatoria(false);
                     dao.gravarQuestao(id, sessaoId, editar, null); session.clear();
                     check(dao.questoes(id, sessaoId).getFirst().getQuestao().getEnunciado().equals("Questão editada"), "Edição da questão");

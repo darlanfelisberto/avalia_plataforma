@@ -32,6 +32,7 @@
         <class>br.com.avalia.modelo.avaliacao.OpcaoQuestao</class>
         <class>br.com.avalia.modelo.avaliacao.Participacao</class>
         <class>br.com.avalia.modelo.avaliacao.Questao</class>
+        <class>br.com.avalia.modelo.avaliacao.TipoQuestao</class>
         <class>br.com.avalia.modelo.avaliacao.RespostaInstrumento</class>
         <class>br.com.avalia.modelo.avaliacao.RespostaQuestao</class>
         <class>br.com.avalia.modelo.avaliacao.SessaoQuestao</class>
