@@ -1,0 +1,14 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:t="avalia.tags">
+    <section class="module-welcome" aria-labelledby="tituloModulo">
+        <div class="module-icon"><t:icone nome="#{icone}"/></div>
+        <span class="eyebrow">UM ESPAÇO PARA EVOLUIR</span>
+        <h2 id="tituloModulo">#{titulo}</h2>
+        <p>#{descricao}</p>
+        <span class="module-status"><span class="status-dot"/>Em preparação</span>
+        <div class="module-divider"/>
+        <p class="module-note">Em breve, você poderá acompanhar tudo por aqui.</p>
+        <h:link outcome="/index" styleClass="btn btn-outline-secondary">
+            <t:icone nome="arrow-left"/> Voltar à visão geral
+        </h:link>
+    </section>
+</ui:composition>

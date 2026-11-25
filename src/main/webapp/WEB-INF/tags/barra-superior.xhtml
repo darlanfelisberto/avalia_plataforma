@@ -1,0 +1,18 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:t="avalia.tags">
+    <header class="app-topbar">
+        <div class="topbar-location">
+            <button type="button" class="menu-toggle d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#menuLateral" aria-controls="menuLateral" aria-expanded="false" aria-label="Abrir menu principal"><t:icone nome="menu"/></button>
+            <div class="topbar-breadcrumb" aria-label="Localização atual"><span>Plataforma</span><t:icone nome="chevron-right"/><strong>#{empty tituloBarra ? 'Visão geral' : tituloBarra}</strong></div>
+        </div>
+        <div class="topbar-account">
+            <ui:insert name="acoesTopo"/>
+            <span class="topbar-divider" aria-hidden="true"/>
+            <ui:insert name="usuario">
+                <div class="user-profile" aria-label="Usuário atual">
+                    <span class="user-avatar" aria-hidden="true"><ui:insert name="avatarUsuario"><t:icone nome="user"/></ui:insert></span>
+                    <span class="user-info"><strong class="user-name">#{empty usuarioNome ? 'Visitante' : usuarioNome}</strong><span class="user-role">#{empty usuarioPerfil ? 'Bem-vindo ao Avalia' : usuarioPerfil}</span></span>
+                </div>
+            </ui:insert>
+        </div>
+    </header>
+</ui:composition>

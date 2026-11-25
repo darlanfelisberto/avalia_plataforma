@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:h="jakarta.faces.html" xmlns:ui="jakarta.faces.facelets" xmlns:t="avalia.tags">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="theme-color" content="#112b36"/>
+        <title>#{empty tituloPagina ? 'Avalia' : tituloPagina.concat(' · Avalia')}</title>
+        <h:outputStylesheet name="styles/vendor/bootstrap.min.css"/>
+        <h:outputStylesheet name="styles/layout.css"/>
+        <ui:insert name="head"/>
+    </h:head>
+    <h:body styleClass="app-body">
+        <a class="skip-link" href="#conteudoPrincipal">Ir para o conteúdo</a>
+        <div class="app-shell">
+            <ui:include src="/WEB-INF/includes/menu-lateral.xhtml">
+                <ui:param name="itemMenuAtivo" value="#{menuAtivo}"/>
+            </ui:include>
+            <div class="app-main">
+                <t:barraSuperior tituloBarra="#{tituloPagina}" usuarioNome="#{nomeUsuario}" usuarioPerfil="#{perfilUsuario}"/>
+                <main id="conteudoPrincipal" class="app-content" tabindex="-1">
+                    <h:messages id="mensagensGlobais" globalOnly="true" redisplay="false" styleClass="app-messages"/>
+                    <ui:insert name="cabecalhoPagina">
+                        <div class="page-heading">
+                            <div>
+                                <span class="eyebrow">AVALIA PLATAFORMA</span>
+                                <h1>#{empty tituloPagina ? 'Visão geral' : tituloPagina}</h1>
+                                <ui:fragment rendered="#{not empty descricaoPagina}"><p>#{descricaoPagina}</p></ui:fragment>
+                            </div>
+                            <div class="page-actions"><ui:insert name="acoesPagina"/></div>
+                        </div>
+                    </ui:insert>
+                    <ui:insert name="conteudo"/>
+                </main>
+                <footer class="app-footer">
+                    <span>Avalia <span class="footer-dot">·</span> Escutar para transformar.</span>
+                    <span class="footer-caption">Feito para a comunidade acadêmica</span>
+                </footer>
+            </div>
+        </div>
+        <h:outputScript name="scripts/vendor/bootstrap.bundle.min.js" target="body"/>
+        <h:outputScript name="scripts/layout.js" target="body"/>
+        <ui:insert name="scripts"/>
+    </h:body>
+</html>

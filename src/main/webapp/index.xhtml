@@ -1,11 +1,58 @@
-<!DOCTYPE html>
-<html lang="pt-BR" xmlns:h="jakarta.faces.html">
-    <h:head>
-        <meta charset="UTF-8"/>
-        <title>Avalia Plataforma</title>
-    </h:head>
-    <h:body>
-        <h1>Avalia Plataforma</h1>
-        <p><h:outputText value="Open Liberty e Jakarta Faces estão funcionando."/></p>
-    </h:body>
-</html>
+<ui:composition template="/WEB-INF/templates/layout.xhtml" xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:t="avalia.tags">
+    <ui:param name="tituloPagina" value="Visão geral"/>
+    <ui:param name="descricaoPagina" value="Um olhar completo para construir os próximos passos."/>
+    <ui:param name="menuAtivo" value="inicio"/>
+    <ui:define name="acoesPagina"><span class="welcome-label"><span class="status-dot"/>Seu espaço de avaliação</span></ui:define>
+    <ui:define name="conteudo">
+        <section class="welcome-banner" aria-labelledby="tituloBoasVindas">
+            <div class="welcome-copy">
+                <span class="banner-eyebrow"><span class="banner-dash"/>ESCUTAR. COMPREENDER. EVOLUIR.</span>
+                <h2 id="tituloBoasVindas">Cada perspectiva conta.<br/>Cada resposta transforma.</h2>
+                <p>Conecte pessoas, organize avaliações e transforme a escuta<br class="d-none d-xl-inline"/> em caminhos para uma instituição cada vez melhor.</p>
+                <h:link outcome="/avaliacoes" styleClass="btn btn-avalia">Explorar avaliações<t:icone nome="arrow-right"/></h:link>
+            </div>
+            <div class="welcome-art" aria-hidden="true">
+                <span class="art-orbit orbit-one"/><span class="art-orbit orbit-two"/>
+                <span class="art-dot dot-one"/><span class="art-dot dot-two"/>
+                <div class="art-sheet art-sheet-back"/>
+                <div class="art-sheet art-sheet-front">
+                    <span class="art-sheet-mark"><t:icone nome="brand"/></span>
+                    <span class="art-line line-title"/><span class="art-line line-subtitle"/>
+                    <div class="art-check-row"><span class="art-checkbox checked"><t:icone nome="check"/></span><span class="art-line"/></div>
+                    <div class="art-check-row"><span class="art-checkbox checked"><t:icone nome="check"/></span><span class="art-line"/></div>
+                    <div class="art-check-row"><span class="art-checkbox"/><span class="art-line"/></div>
+                    <span class="art-sheet-footer"/>
+                </div>
+                <span class="art-success"><t:icone nome="check"/></span><span class="art-spark"><t:icone nome="sparkles"/></span>
+            </div>
+        </section>
+        <section class="quick-access-section" aria-labelledby="tituloAcessoRapido">
+            <div class="section-heading"><div><span class="eyebrow">TUDO NO SEU LUGAR</span><h2 id="tituloAcessoRapido">Por onde vamos começar?</h2></div><span class="section-caption">Acesso rápido</span></div>
+            <div class="row g-3 g-xl-4">
+                <div class="col-12 col-md-4"><h:link outcome="/avaliacoes" styleClass="access-card">
+                    <div class="access-card-top"><span class="feature-icon icon-teal"><t:icone nome="clipboard"/></span><t:icone nome="arrow-up-right" classe="access-arrow"/></div>
+                    <h3>Avaliações</h3><p>Organize instrumentos e acompanhe cada etapa da avaliação.</p>
+                    <span class="access-card-bottom">Explorar área<t:icone nome="arrow-right"/></span>
+                </h:link></div>
+                <div class="col-12 col-md-4"><h:link outcome="/questoes" styleClass="access-card">
+                    <div class="access-card-top"><span class="feature-icon icon-blue"><t:icone nome="layers"/></span><t:icone nome="arrow-up-right" classe="access-arrow"/></div>
+                    <h3>Banco de questões</h3><p>Reúna perguntas e possibilidades para ouvir melhor.</p>
+                    <span class="access-card-bottom">Explorar área<t:icone nome="arrow-right"/></span>
+                </h:link></div>
+                <div class="col-12 col-md-4"><h:link outcome="/comunidade" styleClass="access-card">
+                    <div class="access-card-top"><span class="feature-icon icon-amber"><t:icone nome="users"/></span><t:icone nome="arrow-up-right" classe="access-arrow"/></div>
+                    <h3>Comunidade</h3><p>Conecte a participação às diferentes perspectivas da instituição.</p>
+                    <span class="access-card-bottom">Explorar área<t:icone nome="arrow-right"/></span>
+                </h:link></div>
+            </div>
+        </section>
+        <section class="journey-panel" aria-labelledby="tituloJornada">
+            <div class="journey-intro"><span class="feature-icon icon-neutral"><t:icone nome="compass"/></span><div><h2 id="tituloJornada">Da escuta à transformação</h2><p>Uma jornada construída em conjunto.</p></div></div>
+            <ol class="journey-steps">
+                <li><span class="step-number">01</span><span><strong>Preparar</strong><small>Dar forma às perguntas</small></span></li>
+                <li><span class="step-number">02</span><span><strong>Escutar</strong><small>Acolher cada perspectiva</small></span></li>
+                <li><span class="step-number">03</span><span><strong>Evoluir</strong><small>Transformar em ação</small></span></li>
+            </ol>
+        </section>
+    </ui:define>
+</ui:composition>

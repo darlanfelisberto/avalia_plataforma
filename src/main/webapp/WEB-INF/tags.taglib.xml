@@ -6,4 +6,7 @@
     <namespace>avalia.tags</namespace>
     <short-name>t</short-name>
     <composite-library-name>components</composite-library-name>
+    <tag><tag-name>icone</tag-name><source>tags/icone.xhtml</source></tag>
+    <tag><tag-name>estadoModulo</tag-name><source>tags/estado-modulo.xhtml</source></tag>
+    <tag><tag-name>barraSuperior</tag-name><source>tags/barra-superior.xhtml</source></tag>
 </facelet-taglib>

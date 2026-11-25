@@ -1,0 +1,33 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough" xmlns:t="avalia.tags">
+    <aside id="menuLateral" class="app-sidebar offcanvas-lg offcanvas-start" tabindex="-1" aria-labelledby="nomePlataforma">
+        <div class="sidebar-brand">
+            <h:link outcome="/index" styleClass="brand-link">
+                <span class="brand-mark" aria-hidden="true"><t:icone nome="brand"/></span>
+                <span><span id="nomePlataforma" class="brand-name">avalia<span>.</span></span>
+                    <span class="brand-caption">PLATAFORMA DE AVALIAÇÃO</span></span>
+            </h:link>
+            <button type="button" class="sidebar-close d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#menuLateral" aria-label="Fechar menu"><t:icone nome="close"/></button>
+        </div>
+        <div class="sidebar-workspace">
+            <span class="workspace-icon"><t:icone nome="building"/></span>
+            <span><strong>Espaço institucional</strong><small>Comunidade acadêmica</small></span>
+        </div>
+        <nav class="sidebar-navigation" aria-label="Menu principal">
+            <span class="navigation-label">PRINCIPAL</span>
+            <h:link outcome="/index" styleClass="sidebar-link #{itemMenuAtivo eq 'inicio' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'inicio' ? 'page' : null}"><t:icone nome="grid"/><span>Visão geral</span></h:link>
+            <h:link outcome="/avaliacoes" styleClass="sidebar-link #{itemMenuAtivo eq 'avaliacoes' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'avaliacoes' ? 'page' : null}"><t:icone nome="clipboard"/><span>Avaliações</span></h:link>
+            <h:link outcome="/questoes" styleClass="sidebar-link #{itemMenuAtivo eq 'questoes' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'questoes' ? 'page' : null}"><t:icone nome="layers"/><span>Banco de questões</span></h:link>
+            <h:link outcome="/comunidade" styleClass="sidebar-link #{itemMenuAtivo eq 'comunidade' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'comunidade' ? 'page' : null}"><t:icone nome="users"/><span>Comunidade</span></h:link>
+            <span class="navigation-label navigation-label-secondary">ACOMPANHAMENTO</span>
+            <h:link outcome="/relatorios" styleClass="sidebar-link #{itemMenuAtivo eq 'relatorios' ? 'is-active' : ''}" pt:aria-current="#{itemMenuAtivo eq 'relatorios' ? 'page' : null}"><t:icone nome="chart"/><span>Relatórios</span></h:link>
+            <ui:insert name="menuAdicional"/>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="sidebar-message"><span class="sidebar-message-icon"><t:icone nome="sparkles"/></span>
+                <strong>Uma escuta que transforma.</strong><p>Novas perspectivas começam com a participação de todos.</p>
+            </div>
+            <div class="sidebar-signature"><span class="status-dot"/>Conexões que fazem evoluir</div>
+        </div>
+    </aside>
+</ui:composition>
