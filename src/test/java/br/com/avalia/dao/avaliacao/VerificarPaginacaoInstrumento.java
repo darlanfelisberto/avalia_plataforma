@@ -1,6 +1,8 @@
 package br.com.avalia.dao.avaliacao;
 
 import br.com.avalia.modelo.avaliacao.InstrumentoAvaliativo;
+import br.com.avalia.bean.DataTableBean;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
@@ -78,11 +80,44 @@ public final class VerificarPaginacaoInstrumento {
         check(porStatus.equals(ordemStatus), "Ordenação de status deve usar a descrição");
         check(primeira.stream().allMatch(item -> org.hibernate.Hibernate.isInitialized(item.getStatus())),
                 "Status deve estar carregado para exibição na tela");
+        check(statusDAO.contar(Map.of()) == statusDisponiveis.size(), "Base genérica deve contar outra entidade");
+        var paginaStatus = statusDAO.listarPagina(0, 2, Map.of(), null, false);
+        check(paginaStatus.stream().map(item -> item.getId()).toList()
+                        .equals(statusDisponiveis.stream().limit(2).map(item -> item.getId()).toList()),
+                "Base genérica deve paginar status na ordem padrão");
+        check(statusDAO.contar(Map.of("codigo", "RASCUNHO")) == 1,
+                "Outro DAO deve aplicar seu próprio predicado");
+        validarEstadoTabela(dao, total);
         expectInvalid(() -> dao.listarPagina(-1, 10, Map.of(), null, false));
         expectInvalid(() -> dao.listarPagina(0, 101, Map.of(), null, false));
         expectInvalid(() -> dao.listarPagina(0, 10, Map.of(), "campo_inexistente", true));
         expectInvalid(() -> dao.contar(Map.of("campo_inexistente", "valor")));
         System.out.println("Paginação SQL, contagem, ordenação, filtros e limites OK.");
+    }
+
+    private static void validarEstadoTabela(DAOTeste dao, long total) {
+        var bean = new BeanTeste(dao);
+        bean.iniciar();
+        check(bean.getRegistros().count(Map.of()) == total, "Bean inicia sem filtros");
+        String inexistente = "sem-registro-" + UUID.randomUUID();
+        bean.getFiltros().put("titulo", inexistente);
+        check(bean.getRegistros().count(Map.of()) == total, "Edição não deve alterar os filtros aplicados");
+        bean.setPrimeiroRegistro(50);
+        bean.pesquisar();
+        check(bean.getPrimeiroRegistro() == 0, "Pesquisar deve voltar à primeira página");
+        check(bean.getRegistros().count(Map.of()) == 0, "Pesquisar deve aplicar os filtros");
+        check(bean.getRegistros().load(0, 10, Map.of(), Map.of()).isEmpty(), "LazyDataModel deve aplicar filtro na página");
+        bean.getFiltros().clear();
+        bean.atualizarLista();
+        check(bean.getRegistros().count(Map.of()) == 0, "Atualizar deve preservar a última pesquisa aplicada");
+        bean.limparFiltros();
+        check(bean.getFiltros().isEmpty() && bean.getPrimeiroRegistro() == 0,
+                "Limpar deve restaurar filtros e posição");
+        check(bean.getRegistros().count(Map.of()) == total, "Limpar deve restaurar todos os registros");
+        bean.getFiltros().put("titulo", "   ");
+        bean.pesquisar();
+        check(bean.getRegistros().count(Map.of()) == total, "Filtros em branco devem ser ignorados");
+        System.out.println("Estado reutilizável da tabela: pesquisa, filtros aplicados, atualização e limpeza OK.");
     }
 
     private static void expectInvalid(Runnable action) {
@@ -110,5 +145,17 @@ public final class VerificarPaginacaoInstrumento {
         private StatusDAOTeste(Session session) {
             entityManager = session;
         }
+    }
+
+    private static final class BeanTeste extends DataTableBean<InstrumentoAvaliativo> {
+        @Serial
+        private static final long serialVersionUID = 1L;
+        private final DAOTeste dao;
+
+        private BeanTeste(DAOTeste dao) { this.dao = dao; }
+        private void iniciar() { inicializarTabela(); }
+
+        @Override
+        protected InstrumentoAvaliativoDAO dao() { return dao; }
     }
 }

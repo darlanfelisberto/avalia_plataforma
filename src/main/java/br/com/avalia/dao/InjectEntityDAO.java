@@ -18,6 +18,10 @@ public abstract class InjectEntityDAO<T extends Model<?>> {
         this.entityClass = Objects.requireNonNull(entityClass, "O tipo da entidade é obrigatório.");
     }
 
+    protected Class<T> getEntityClass() {
+        return entityClass;
+    }
+
     /** Persiste uma entidade nova e retorna a mesma instância. */
     @Transactional
     public T salvar(T entidade) {

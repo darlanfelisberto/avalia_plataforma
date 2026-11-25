@@ -4,15 +4,17 @@ A primeira tela do cadastro é `src/main/webapp/instrumento_avaliativo.xhtml`.
 Ela usa o template Bootstrap e um `p:dataTable` do PrimeFaces 16.0.2.
 
 - `InstrumentoAvaliativoDAO`, em `br.com.avalia.dao.avaliacao`, estende
-  `InjectEntityDAO<InstrumentoAvaliativo>`.
+  `DataTableDAO<InstrumentoAvaliativo>`, que herda `InjectEntityDAO`.
 - `InstrumentoAvalitivoBean`, em `br.com.avalia.bean.avaliacao`, controla a
   página e é exposto no EL como `instrumentoAvalitivoBean`.
 - O nome `InstrumentoAvalitivoBean` mantém a grafia solicitada.
+- O bean estende `DataTableBean<InstrumentoAvaliativo>`; filtros e ações comuns
+  são herdados. Consulte [a estrutura reutilizável](tabelas-reutilizaveis.md).
 
 ## Paginação no banco
 
 O bean mantém um `LazyDataModel<InstrumentoAvaliativo>`, inicializado em
-`@PostConstruct`. `count()` usa `DAO.contar(filtros)` e `load()` usa
+`@PostConstruct`, pela base `DataTableBean`. `count()` usa `DAO.contar(filtros)` e `load()` usa
 `DAO.listarPagina(...)`. Os getters apenas retornam o estado; nenhuma consulta
 é feita dentro deles. A página não usa `listarTodos()`.
 
@@ -67,7 +69,8 @@ incorporados ao cadastro nas próximas etapas.
 
 A tabela `avaliacao.status` tem `id` inteiro gerado por identidade, `codigo`
 único e `descricao`. A entidade `Status` estende `Model<Integer>`; `StatusDAO`
-estende `InjectEntityDAO<Status>` e lista os registros por descrição.
+estende `DataTableDAO<Status>` e lista os registros por descrição. Ambos os DAOs
+concretos são `@RequestScoped`.
 
 `InstrumentoAvaliativo.status` é uma associação `ManyToOne` sem cascatas.
 A coluna existente `instrumento_avaliativo.status` foi preservada e referencia

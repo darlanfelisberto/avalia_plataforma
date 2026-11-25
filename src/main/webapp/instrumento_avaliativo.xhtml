@@ -29,15 +29,15 @@
             <div class="row g-3 align-items-end">
                 <div class="col-12 col-lg-5">
                     <h:outputLabel for="titulo" value="Instrumento" styleClass="form-label"/>
-                    <h:inputText id="titulo" value="#{instrumentoAvalitivoBean.titulo}" styleClass="form-control"/>
+                    <h:inputText id="titulo" value="#{instrumentoAvalitivoBean.filtros['titulo']}" styleClass="form-control"/>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
                     <h:outputLabel for="ciclo" value="Ciclo" styleClass="form-label"/>
-                    <h:inputText id="ciclo" value="#{instrumentoAvalitivoBean.cicloReferencia}" styleClass="form-control"/>
+                    <h:inputText id="ciclo" value="#{instrumentoAvalitivoBean.filtros['cicloReferencia']}" styleClass="form-control"/>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4">
                     <h:outputLabel for="status" value="Status" styleClass="form-label"/>
-                    <h:selectOneMenu id="status" value="#{instrumentoAvalitivoBean.status}" styleClass="form-select">
+                    <h:selectOneMenu id="status" value="#{instrumentoAvalitivoBean.filtros['status']}" styleClass="form-select">
                         <f:selectItem itemLabel="Todos os status" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItems value="#{instrumentoAvalitivoBean.statusDisponiveis}" var="status"
                                        itemLabel="#{status.descricao}" itemValue="#{status.codigo}"/>
@@ -60,7 +60,7 @@
                         <h2 id="tituloListaInstrumentos">Instrumentos cadastrados</h2>
                     </div>
                 </div>
-                <p:dataTable id="instrumentosTable" value="#{instrumentoAvalitivoBean.instrumentos}"
+                <p:dataTable id="instrumentosTable" value="#{instrumentoAvalitivoBean.registros}"
                              var="instrumento" rowKey="#{instrumento.id}"
                              lazy="true" paginator="true" paginatorPosition="bottom" rows="10"
                              first="#{instrumentoAvalitivoBean.primeiroRegistro}"
@@ -117,4 +117,3 @@
         </h:form>
     </ui:define>
 </ui:composition>
-
