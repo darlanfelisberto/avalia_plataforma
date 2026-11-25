@@ -32,6 +32,9 @@ public class Questao extends Model<UUID> {
     @Column(name = "assunto", length = 100)
     private String assunto;
 
+    @Column(name = "alinhamento", nullable = false)
+    private Integer alinhamento = 2;
+
     @TimeZoneStorage(TimeZoneStorageType.NATIVE)
     @Column(name = "criado_em", nullable = false)
     private OffsetDateTime criadoEm;
@@ -113,4 +116,7 @@ public class Questao extends Model<UUID> {
         this.conjuntoOpcao = conjuntoOpcao;
     }
 
+    public Integer getAlinhamento() { return alinhamento; }
+
+    public void setAlinhamento(Integer alinhamento) { this.alinhamento = alinhamento; }
 }

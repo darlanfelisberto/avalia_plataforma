@@ -97,12 +97,25 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
                 .setParameter("id", questaoId).getResultList();
     }
 
+    public List<OpcaoQuestao> opcoesDoInstrumento(UUID instrumentoId) {
+        return entityManager.createQuery("""
+                select o from OpcaoQuestao o join fetch o.conjuntoOpcao left join fetch o.questao
+                where exists (select sq from SessaoQuestao sq where
+                  sq.instrumentoSessao.instrumentoAvaliativo.instrumentoAvaliativoId=:instrumento
+                  and ((sq.questao.tipo='ESCALAS' and sq.questao.conjuntoOpcao=o.conjuntoOpcao)
+                       or (sq.questao.tipo in ('UNICA_ESCOLHA','MULTIPLA_ESCOLHA') and sq.questao=o.questao)))
+                order by o.ordem, o.opcaoQuestaoId
+                """, OpcaoQuestao.class).setParameter("instrumento", instrumentoId).getResultList();
+    }
+
     @Transactional
     public SessaoQuestao gravarQuestao(UUID instrumentoId, UUID sessaoId, SessaoQuestao dados, UUID conjuntoId, List<OpcaoQuestao> alternativas) {
         var instrumento = instrumentoSalvo(instrumentoId);
         var sessao = sessaoDoInstrumento(instrumentoId, sessaoId);
         exigirTexto(dados.getQuestao().getEnunciado(), Integer.MAX_VALUE, "Enunciado");
         exigirTexto(dados.getQuestao().getTipo(), 16, "Tipo da questão");
+        if (dados.getQuestao().getAlinhamento()==null || !List.of(1,2).contains(dados.getQuestao().getAlinhamento()))
+            throw new IllegalArgumentException("Selecione um alinhamento válido: vertical ou horizontal.");
         TipoQuestaoId tipoId;
         try { tipoId = TipoQuestaoId.valueOf(dados.getQuestao().getTipo()); }
         catch (IllegalArgumentException e) { throw new IllegalArgumentException("Selecione um tipo de questão válido."); }
@@ -133,6 +146,7 @@ public class InstrumentoCadastroDAO extends InjectEntityDAO<InstrumentoAvaliativ
             if (destino==null || !destino.getInstrumentoSessao().getId().equals(sessaoId)) throw new IllegalArgumentException("Questão não pertence à sessão selecionada.");
         }
         var questao = destino.getQuestao();
+        questao.setAlinhamento(dados.getQuestao().getAlinhamento());
         questao.setEnunciado(dados.getQuestao().getEnunciado().strip()); questao.setAssunto(dados.getQuestao().getAssunto());
         questao.setTipo(dados.getQuestao().getTipo().strip()); questao.setConjuntoOpcao(conjunto);
         if (questao.getId()==null) { questao.setCriadoEm(OffsetDateTime.now()); questao.setCriadoPor(instrumento.getCriadoPor()); entityManager.persist(questao); }

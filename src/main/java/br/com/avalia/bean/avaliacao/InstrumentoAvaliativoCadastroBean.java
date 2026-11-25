@@ -149,7 +149,7 @@ public class InstrumentoAvaliativoCadastroBean implements Serializable {
         questao = new SessaoQuestao(); questao.setSessaoQuestaoId(item.getId());
         questao.setOrdem(item.getOrdem()); questao.setObrigatoria(item.getObrigatoria()); questao.setPeso(item.getPeso());
         var q = new Questao(); q.setEnunciado(item.getQuestao().getEnunciado()); q.setAssunto(item.getQuestao().getAssunto());
-        q.setTipo(item.getQuestao().getTipo()); questao.setQuestao(q);
+        q.setTipo(item.getQuestao().getTipo()); q.setAlinhamento(item.getQuestao().getAlinhamento()); questao.setQuestao(q);
         conjuntoId = item.getQuestao().getConjuntoOpcao()==null ? null : item.getQuestao().getConjuntoOpcao().getId();
     }
 

@@ -1,0 +1,24 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml" xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core" xmlns:a="avalia.componentes">
+ <ui:param name="menuAtivo" value="avaliacoes"/>
+ <ui:define name="metadata"><f:metadata><f:viewParam name="id" value="#{instrumentoVisualizacaoBean.id}"/><f:viewAction action="#{instrumentoVisualizacaoBean.carregar}"/></f:metadata></ui:define>
+ <ui:define name="styles"><h:outputStylesheet name="styles/instrumento-cadastro.css"/></ui:define>
+ <ui:define name="conteudo">
+  <div class="cadastro-heading">
+   <div><h1><h:outputText value="#{instrumentoVisualizacaoBean.instrumento.titulo}"/></h1><p>Visualização do instrumento · os campos abaixo são apenas uma prévia.</p></div>
+   <h:link outcome="/instrumento_avaliativo" value="Voltar à listagem" styleClass="btn btn-outline-secondary"/>
+  </div>
+  <div class="mb-4"><h:outputText value="#{instrumentoVisualizacaoBean.instrumento.descricao}" styleClass="instrumento-sessao-descricao"/><p class="cadastro-help">Ciclo: <h:outputText value="#{instrumentoVisualizacaoBean.instrumento.cicloReferencia}"/> · <h:outputText value="#{instrumentoVisualizacaoBean.instrumento.status.descricao}"/></p></div>
+  <ui:fragment rendered="#{empty instrumentoVisualizacaoBean.sessoes}"><p class="cadastro-help">Nenhuma sessão cadastrada neste instrumento.</p></ui:fragment>
+  <ui:repeat id="sessoes" value="#{instrumentoVisualizacaoBean.sessoes}" var="s">
+   <section class="instrumento-sessao">
+    <header class="instrumento-sessao-cabecalho"><div><span class="instrumento-sessao-ordem">Sessão <h:outputText value="#{s.ordem}"/></span><h2><h:outputText value="#{s.titulo}"/></h2><h:outputText value="#{s.descricao}" styleClass="instrumento-sessao-descricao" rendered="#{not empty s.descricao}"/></div></header>
+    <div class="instrumento-sessao-questoes">
+     <ui:fragment rendered="#{empty instrumentoVisualizacaoBean.questoesPorSessao[s.id]}"><p class="cadastro-help">Nenhuma questão cadastrada nesta sessão.</p></ui:fragment>
+     <ui:repeat id="questoes" value="#{instrumentoVisualizacaoBean.questoesPorSessao[s.id]}" var="q">
+      <a:questao id="questao" value="#{q}" opcoes="#{instrumentoVisualizacaoBean.opcoesPorQuestao[q.questao.id]}"/>
+     </ui:repeat>
+    </div>
+   </section>
+  </ui:repeat>
+ </ui:define>
+</ui:composition>

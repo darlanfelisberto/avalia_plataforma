@@ -1,0 +1,12 @@
+.questao-preview { border:0; border-bottom:1px solid #e4ece7; padding:22px 0; margin:0; min-width:0; }
+.questao-preview:last-child { border-bottom:0; }
+.questao-preview legend { float:none; width:auto; margin:0 0 12px; font-size:15px; line-height:1.6; font-weight:500; color:#2b4437; white-space:pre-wrap; overflow-wrap:anywhere; }
+.questao-preview-obrigatoria { display:block; color:#718378; font-size:11px; margin-bottom:12px; }
+.questao-preview textarea { display:block; width:100%; border:1px solid #dce7df; border-radius:8px; padding:12px; background:#fafcfb; resize:vertical; }
+.questao-preview-opcoes { display:flex; flex-direction:column; gap:10px; }
+.questao-preview-opcoes.questao-preview-horizontal { flex-direction:row; flex-wrap:wrap; gap:12px 24px; }
+.questao-preview-opcoes.questao-preview-vertical { flex-direction:column; }
+.questao-preview-opcoes label { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:#405c4c; }
+.questao-preview-opcoes input { margin-top:4px; flex-shrink:0; }
+.questao-preview-opcoes span { white-space:pre-wrap; overflow-wrap:anywhere; }
+.questao-preview-aviso { font-size:13px; color:#718378; }

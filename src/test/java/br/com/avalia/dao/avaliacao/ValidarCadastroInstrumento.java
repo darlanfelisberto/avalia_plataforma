@@ -54,6 +54,7 @@ public final class ValidarCadastroInstrumento {
                     var vinculada = dao.gravarQuestao(id, sessaoId, questao, null);
                     UUID vinculoId = vinculada.getId(); session.clear();
                     var lista = dao.questoes(id, sessaoId);
+                    check(lista.getFirst().getQuestao().getAlinhamento()==2, "Alinhamento padrão deve ser horizontal");
                     check(dao.questoesDoInstrumento(id).size()==1
                             && dao.questoesDoInstrumento(id).getFirst().getInstrumentoSessao().getId().equals(sessaoId),
                             "Visão completa deve agrupar a questão na sessão correta");
@@ -62,8 +63,10 @@ public final class ValidarCadastroInstrumento {
                     var editar = new SessaoQuestao(); editar.setSessaoQuestaoId(vinculoId); editar.setQuestao(new Questao());
                     editar.getQuestao().setTipo("DESCRITIVA"); editar.getQuestao().setEnunciado("Questão editada");
                     editar.setOrdem(2); editar.setObrigatoria(false);
+                    editar.getQuestao().setAlinhamento(1);
                     dao.gravarQuestao(id, sessaoId, editar, null); session.clear();
                     check(dao.questoes(id, sessaoId).getFirst().getQuestao().getEnunciado().equals("Questão editada"), "Edição da questão");
+                    check(dao.questoes(id, sessaoId).getFirst().getQuestao().getAlinhamento()==1, "Alinhamento vertical deve ser preservado");
                     editar.getQuestao().setTipo("UNICA_ESCOLHA");
                     var a = new OpcaoQuestao(); a.setTexto("Sim"); a.setOrdem(2); a.setCorreta(true); a.setValor(new BigDecimal("2.50"));
                     var b = new OpcaoQuestao(); b.setTexto("Não"); b.setOrdem(1); b.setCorreta(false); b.setValor(new BigDecimal("-1.00"));
@@ -71,6 +74,8 @@ public final class ValidarCadastroInstrumento {
                     var comOpcoes = dao.gravarQuestao(id, sessaoId, editar, null, java.util.List.of(a,b));
                     UUID questaoId = comOpcoes.getQuestao().getId(); session.clear();
                     check(dao.opcoes(questaoId).size()==2, "Opções devem ser gravadas com a questão");
+                    check(dao.opcoesDoInstrumento(id).size()==2 && dao.opcoesDoInstrumento(outra.getId()).isEmpty(),
+                            "Visualização deve carregar apenas as opções do instrumento");
                     check(dao.opcoes(questaoId).getFirst().getTexto().equals("Não"), "Ordem informada deve ser preservada");
                     var opcaoCorreta = dao.opcoes(questaoId).get(1);
                     check(opcaoCorreta.getCorreta() && opcaoCorreta.getValor().compareTo(new BigDecimal("2.50"))==0

@@ -93,6 +93,9 @@
                         <h:outputText value="#{instrumento.anonimo ? 'Sim' : 'Não'}"/>
                     </p:column>
                     <p:column headerText="Ações" filterable="false" sortable="false">
+                        <h:link outcome="/instrumento_avaliativo_visualizar" value="Visualizar" styleClass="btn btn-sm btn-outline-secondary">
+                            <f:param name="id" value="#{instrumento.id}"/>
+                        </h:link>
                         <h:link outcome="/instrumento_avaliativo_cadastro" value="Editar" styleClass="btn btn-sm btn-outline-secondary">
                             <f:param name="id" value="#{instrumento.id}"/>
                         </h:link>
